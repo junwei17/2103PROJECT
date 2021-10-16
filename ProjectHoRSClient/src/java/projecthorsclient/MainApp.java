@@ -46,6 +46,7 @@ public class MainApp {
     
     private void doLogin() throws InvalidLoginCredentialException
     {
+        System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
         String username = "";
         String password = "";
@@ -58,6 +59,8 @@ public class MainApp {
         
         if(username.length() > 0 && password.length() > 0)
         {
+            System.out.println("checking for current employee 1" + username + " " + password);
+            System.out.println(employeeSessionBeanRemote.test());
             currentEmployee = employeeSessionBeanRemote.employeeLogin(username, password);      
         }
         else

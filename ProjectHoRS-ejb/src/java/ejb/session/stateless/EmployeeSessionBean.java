@@ -64,8 +64,10 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     @Override
     public Employee retrieveEmployeeByUsername(String username) throws EmployeeNotFoundException
     {
-        Query query = entityManager.createQuery("SELECT e FROM Employee e WHERE e.employeeUsername = :inUsername");
-        query.setParameter("inUsername", username);
+        System.out.println("doing the query next");
+        Query query = entityManager.createQuery("SELECT e FROM Employee e WHERE e.employeeUsername = :inemployeeUsername");
+        System.out.println("query passed");
+        query.setParameter("inemployeeUsername", username);
         
         try
         {
@@ -80,6 +82,7 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     @Override
     public Employee employeeLogin(String username, String password) throws InvalidLoginCredentialException
     {
+        System.out.println("reached login");
         try
         {   
             System.out.println("Searching for matching username");
@@ -101,6 +104,12 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
             System.out.println("found nothing2");
             throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
         }
+    }
+    
+    @Override
+    public String test() {
+        System.out.println("remote does work");
+        return "Hello";
     }
 
     
