@@ -24,6 +24,18 @@ public class Employee implements Serializable {
     private Long employeeId;
     private String employeeName;
 
+    public Employee() {
+    } 
+
+    public Employee(String employeeName) {
+        this.employeeName = employeeName;
+    }
+    
+    public Employee(Long employeeId, String employeeName) {
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+    }
+    
     public Long getEmployeeId() {
         return employeeId;
     }
