@@ -24,10 +24,10 @@ public class DataInitSessionBean implements DataInitSessionBeanRemote, DataInitS
     @PostConstruct
     public void postConstruct(){
         if(em.find(Employee.class, 1l) == null) {
-            em.persist(new Employee("Bob"));
-            em.persist(new Employee("Alice"));
-            em.persist(new Employee("Claire"));
+            em.persist(new Employee("Bob", "Bob"));
+            em.persist(new Employee("Alice", "Alice"));
+            em.persist(new Employee("Claire", "Claire"));
         }
     }
-
+    
 }

@@ -6,10 +6,12 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import util.enumeration.AccessRightEnum;
 
 /**
  *
@@ -22,18 +24,25 @@ public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
-    private String employeeName;
+    @Column(nullable = false, unique = true, length = 32)
+    private String employeeUsername;
+    @Column(nullable = false, length = 32)
+    private String password;
+    @Column(nullable = false)
+    private AccessRightEnum accessRightEnum;
 
     public Employee() {
     } 
 
-    public Employee(String employeeName) {
-        this.employeeName = employeeName;
+    public Employee(String employeeUsername, String password) {
+        this.employeeUsername = employeeUsername;
+        this.password = password;
     }
-    
-    public Employee(Long employeeId, String employeeName) {
-        this.employeeId = employeeId;
-        this.employeeName = employeeName;
+
+    public Employee(String employeeUsername, String password, AccessRightEnum accessRightEnum) {
+        this.employeeUsername = employeeUsername;
+        this.password = password;
+        this.accessRightEnum = accessRightEnum;
     }
     
     public Long getEmployeeId() {
@@ -70,17 +79,45 @@ public class Employee implements Serializable {
     }
 
     /**
-     * @return the employeeName
+     * @return the employeeUsername
      */
-    public String getEmployeeName() {
-        return employeeName;
+    public String getEmployeeUsername() {
+        return employeeUsername;
     }
 
     /**
-     * @param employeeName the employeeName to set
+     * @param employeeUsername the employeeUsername to set
      */
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public void setEmployeeUsername(String employeeUsername) {
+        this.employeeUsername = employeeUsername;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @return the accessRightEnum
+     */
+    public AccessRightEnum getAccessRightEnum() {
+        return accessRightEnum;
+    }
+
+    /**
+     * @param accessRightEnum the accessRightEnum to set
+     */
+    public void setAccessRightEnum(AccessRightEnum accessRightEnum) {
+        this.accessRightEnum = accessRightEnum;
     }
     
 }
