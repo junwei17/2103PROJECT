@@ -22,6 +22,7 @@ public class Employee implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
+    private String employeeName;
 
     public Long getEmployeeId() {
         return employeeId;
@@ -54,6 +55,20 @@ public class Employee implements Serializable {
     @Override
     public String toString() {
         return "entity.Employee[ id=" + employeeId + " ]";
+    }
+
+    /**
+     * @return the employeeName
+     */
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    /**
+     * @param employeeName the employeeName to set
+     */
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
     
 }
