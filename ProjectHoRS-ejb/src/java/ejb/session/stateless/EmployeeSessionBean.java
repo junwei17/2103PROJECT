@@ -106,11 +106,11 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
         }
     }
     
-    @Override
+    /*@Override
     public String test() {
         System.out.println("remote does work");
         return "Hello";
-    }
+    }*/
 
     
 }

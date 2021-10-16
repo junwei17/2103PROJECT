@@ -31,12 +31,14 @@ public class MainApp {
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) ***\n");
         System.out.println("1: Login");
         System.out.println("2: Create new employee\n");
+        System.out.print("> ");
         int response = sc.nextInt();
         
         if(response == 1){
             try{
                 doLogin();
                 System.out.println("Login successful!\n");
+                System.out.println("Welcome! " + currentEmployee.getEmployeeUsername() + "\n");
             } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
             }
@@ -46,7 +48,6 @@ public class MainApp {
     
     private void doLogin() throws InvalidLoginCredentialException
     {
-        System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
         String username = "";
         String password = "";
@@ -59,8 +60,8 @@ public class MainApp {
         
         if(username.length() > 0 && password.length() > 0)
         {
-            System.out.println("checking for current employee 1" + username + " " + password);
-            System.out.println(employeeSessionBeanRemote.test());
+            //System.out.println("checking for current employee 1" + username + " " + password);
+            //System.out.println(employeeSessionBeanRemote.test());
             currentEmployee = employeeSessionBeanRemote.employeeLogin(username, password);      
         }
         else
