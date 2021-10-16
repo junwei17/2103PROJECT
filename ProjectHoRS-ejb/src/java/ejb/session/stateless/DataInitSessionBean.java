@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Employee;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,7 +23,11 @@ public class DataInitSessionBean implements DataInitSessionBeanRemote, DataInitS
 
     @PostConstruct
     public void postConstruct(){
-        
+        if(em.find(Employee.class, 1l) == null) {
+            em.persist(new Employee("Bob"));
+            em.persist(new Employee("Alice"));
+            em.persist(new Employee("Claire"));
+        }
     }
 
 }
