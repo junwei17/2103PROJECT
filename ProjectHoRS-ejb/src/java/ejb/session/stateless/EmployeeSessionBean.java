@@ -13,7 +13,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import util.exception.EmployeeNotFoundException;
+import util.exception.InvalidAccessRightException;
 import util.exception.EmployeeUsernameExistException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.UnknownPersistenceException;
@@ -32,7 +32,7 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     }
 
     @Override
-    public Long createNewStaff(Employee newEmployee) throws EmployeeUsernameExistException, UnknownPersistenceException
+    public Long createNewEmployee(Employee newEmployee) throws EmployeeUsernameExistException, UnknownPersistenceException
     {
         try
         {
@@ -62,7 +62,7 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     }
     
     @Override
-    public Employee retrieveEmployeeByUsername(String username) throws EmployeeNotFoundException
+    public Employee retrieveEmployeeByUsername(String username) throws InvalidAccessRightException
     {
         System.out.println("doing the query next");
         Query query = entityManager.createQuery("SELECT e FROM Employee e WHERE e.employeeUsername = :inemployeeUsername");
@@ -75,7 +75,7 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
         }
         catch(NoResultException | NonUniqueResultException ex)
         {
-            throw new EmployeeNotFoundException("Employee Username " + username + " does not exist!");
+            throw new InvalidAccessRightException("Employee Username " + username + " does not exist!");
         }
     }
     
@@ -99,7 +99,7 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
                 throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
             }
         }
-        catch(EmployeeNotFoundException ex)
+        catch(InvalidAccessRightException ex)
         {
             System.out.println("found nothing2");
             throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
