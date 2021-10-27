@@ -34,13 +34,13 @@ public class Room implements Serializable {
     private Reservation reservation;
 
     @OneToOne
-    private RoomType roomType;
+    private RoomRate roomType;
     
     
     public Room() {
     }
 
-    public Room(RoomType roomType, Integer roomNo, Integer sequenceNo, Reservation reservation, boolean status) {
+    public Room(RoomRate roomType, Integer roomNo, Integer sequenceNo, Reservation reservation, boolean status) {
         this.roomType = roomType;
         this.roomNo = roomNo;
         this.sequenceNo = sequenceNo;

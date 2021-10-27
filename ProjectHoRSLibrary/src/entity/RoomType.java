@@ -6,13 +6,11 @@
 package entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import util.enumeration.RateTypeEnum;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -24,48 +22,40 @@ public class RoomType implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long RoomTypeId;
+    private Long roomTypeId;
     private String name;
-    private RateTypeEnum rateType;
-    private BigDecimal ratePerNight;
-    private Date validityStartDate;
-    private Date validityEndDate;
-
-    public RoomType(String name, RateTypeEnum rateType, BigDecimal ratePerNight, Date validityStartDate, Date validityEndDate) {
-        this.name = name;
-        this.rateType = rateType;
-        this.ratePerNight = ratePerNight;
-        this.validityStartDate = validityStartDate;
-        this.validityEndDate = validityEndDate;
-    }
-
-    public RoomType() {
-    }
+    private String description;
+    private Integer size;
+    private Integer bedCapacity;
+    private String amenities;
+    
+    @OneToMany(mappedBy ="roomType")
+    private RoomRate roomRate;
     
 
     public Long getRoomTypeId() {
-        return RoomTypeId;
+        return roomTypeId;
     }
 
-    public void setRoomTypeId(Long RoomTypeId) {
-        this.RoomTypeId = RoomTypeId;
+    public void setRoomTypeId(Long roomTypeId) {
+        this.roomTypeId = roomTypeId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (RoomTypeId != null ? RoomTypeId.hashCode() : 0);
+        hash += (roomTypeId != null ? roomTypeId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the RoomTypeId fields are not set
+        // TODO: Warning - this method won't work in the case the roomTypeId fields are not set
         if (!(object instanceof RoomType)) {
             return false;
         }
         RoomType other = (RoomType) object;
-        if ((this.RoomTypeId == null && other.RoomTypeId != null) || (this.RoomTypeId != null && !this.RoomTypeId.equals(other.RoomTypeId))) {
+        if ((this.roomTypeId == null && other.roomTypeId != null) || (this.roomTypeId != null && !this.roomTypeId.equals(other.roomTypeId))) {
             return false;
         }
         return true;
@@ -73,77 +63,7 @@ public class RoomType implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.RoomType[ id=" + RoomTypeId + " ]";
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return the rateType
-     */
-    public RateTypeEnum getRateType() {
-        return rateType;
-    }
-
-    /**
-     * @param rateType the rateType to set
-     */
-    public void setRateType(RateTypeEnum rateType) {
-        this.rateType = rateType;
-    }
-
-    /**
-     * @return the ratePerNight
-     */
-    public BigDecimal getRatePerNight() {
-        return ratePerNight;
-    }
-
-    /**
-     * @param ratePerNight the ratePerNight to set
-     */
-    public void setRatePerNight(BigDecimal ratePerNight) {
-        this.ratePerNight = ratePerNight;
-    }
-
-    /**
-     * @return the validityStartDate
-     */
-    public Date getValidityStartDate() {
-        return validityStartDate;
-    }
-
-    /**
-     * @param validityStartDate the validityStartDate to set
-     */
-    public void setValidityStartDate(Date validityStartDate) {
-        this.validityStartDate = validityStartDate;
-    }
-
-    /**
-     * @return the validityEndDate
-     */
-    public Date getValidityEndDate() {
-        return validityEndDate;
-    }
-
-    /**
-     * @param validityEndDate the validityEndDate to set
-     */
-    public void setValidityEndDate(Date validityEndDate) {
-        this.validityEndDate = validityEndDate;
+        return "entity.RoomType[ id=" + roomTypeId + " ]";
     }
     
 }
