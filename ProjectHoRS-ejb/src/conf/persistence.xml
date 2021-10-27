@@ -3,6 +3,12 @@
   <persistence-unit name="ProjectHoRS-ejbPU" transaction-type="JTA">
     <jta-data-source>jdbc/ProjectHoRS</jta-data-source>
     <class>entity.Employee</class>
+    <class>entity.Guest</class>
+    <class>entity.Partner</class>
+    <class>entity.Reservation</class>
+    <class>entity.Room</class>
+    <class>entity.RoomRate</class>
+    <class>entity.RoomType</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
