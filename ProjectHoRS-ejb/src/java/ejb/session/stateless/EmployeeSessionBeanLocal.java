@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.InvalidAccessRightException;
 import util.exception.EmployeeUsernameExistException;
@@ -23,5 +24,7 @@ public interface EmployeeSessionBeanLocal {
     public Employee retrieveEmployeeByUsername(String username) throws InvalidAccessRightException;
     public Employee employeeLogin(String username, String password) throws InvalidLoginCredentialException;
     //public String test();
+
+    public List<Employee> retrieveAllEmployees();
     
 }

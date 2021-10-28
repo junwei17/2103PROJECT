@@ -28,6 +28,14 @@ public class Partner implements Serializable {
     @Column(nullable = false, length = 32)
     private String password;
 
+    public Partner(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public Partner() {
+    }
+
     public Long getPartnerId() {
         return partnerId;
     }
@@ -59,6 +67,34 @@ public class Partner implements Serializable {
     @Override
     public String toString() {
         return "entity.Partner[ id=" + partnerId + " ]";
+    }
+
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
     
 }

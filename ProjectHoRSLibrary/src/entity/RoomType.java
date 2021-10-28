@@ -29,8 +29,8 @@ public class RoomType implements Serializable {
     private Integer bedCapacity;
     private String amenities;
     
-    @OneToMany(mappedBy ="roomType")
-    private RoomRate roomRate;
+    //@OneToMany(mappedBy ="roomType")
+    //private RoomRate roomRate;
     
 
     public Long getRoomTypeId() {

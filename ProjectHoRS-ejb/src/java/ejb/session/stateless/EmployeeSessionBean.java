@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -82,10 +83,10 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
     @Override
     public Employee employeeLogin(String username, String password) throws InvalidLoginCredentialException
     {
-        System.out.println("reached login");
+        //System.out.println("reached login");
         try
         {   
-            System.out.println("Searching for matching username");
+            //System.out.println("Searching for matching username");
             Employee staffEntity = retrieveEmployeeByUsername(username);
             
             if(staffEntity.getPassword().equals(password))
@@ -95,7 +96,7 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
             }
             else
             {
-                System.out.println("found nothing");
+                //System.out.println("found nothing");
                 throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
             }
         }
@@ -111,6 +112,9 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
         System.out.println("remote does work");
         return "Hello";
     }*/
-
-    
+    @Override
+    public List<Employee> retrieveAllEmployees() {
+        Query query = entityManager.createQuery("SELECT e FROM Employee e");
+        return query.getResultList();
+    }
 }

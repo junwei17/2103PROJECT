@@ -6,27 +6,33 @@
 package HoRSManagementClient;
 
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
 import entity.Employee;
+import entity.Partner;
+import java.util.List;
 import java.util.Scanner;
 import util.enumeration.AccessRightEnum;
 import util.exception.EmployeeUsernameExistException;
 import util.exception.InvalidAccessRightException;
+import util.exception.PartnerExistException;
 import util.exception.UnknownPersistenceException;
 
 /**
  *
  * @author wongj
  */
-public class SystemAdminstrationModule {
+public class SystemAdministrationModule {
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
     private Employee currentEmployee;
+    private PartnerSessionBeanRemote partnerSessionBeanRemote;
 
-    public SystemAdminstrationModule() {
+    public SystemAdministrationModule() {
     }
 
-    public SystemAdminstrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote) {
+    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, Employee currentEmployee, PartnerSessionBeanRemote partnerSessionBeanRemote) {
         this();
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
+        this.currentEmployee = currentEmployee;
     }
     
     public void menuSystemAminstration() throws InvalidAccessRightException {
@@ -43,6 +49,7 @@ public class SystemAdminstrationModule {
             System.out.println("2: View All Employees");
             System.out.println("3: Create New Partner");
             System.out.println("4: View All Partners");
+            System.out.println("5: Exit to previous menu");
             response = 0;
             
             while(response < 1 || response > 7) {
@@ -51,6 +58,13 @@ public class SystemAdminstrationModule {
                 response = sc.nextInt();
                 if(response == 1) {
                     doCreateNewEmployee();
+                } else if (response == 2) {
+                    doViewAllEmployees();
+                } else if (response == 3){
+                    doCreateNewPartner();
+                }
+                else if(response == 5) {
+                    break;
                 }
             }
         }
@@ -67,7 +81,7 @@ public class SystemAdminstrationModule {
         newEmployee.setPassword(sc.nextLine().trim());
         
         while(true) {
-            System.out.println("Select Access Right (1: ADMINISTRATOR, 2: OPERATION_MANAGER, 3:SALES_MANAGER, 4: EMPLOYEE\n");
+            System.out.println("Select Access Right (1: ADMINISTRATOR, 2: OPERATION_MANAGER, 3:SALES_MANAGER, 4: EMPLOYEE)\n");
             Integer accessRight = sc.nextInt();
             
             if(accessRight >= 1 && accessRight <= 4) {
@@ -87,5 +101,33 @@ public class SystemAdminstrationModule {
         }
     }
     
+    private void doViewAllEmployees(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: System Adminstration :: View All Employees ***\n");
+        List<Employee> employees = employeeSessionBeanRemote.retrieveAllEmployees();
+        System.out.printf("%8s%20s%20s%20s\n","Employee Id", "Access Right", "Username", "Password");
+        for(Employee employee : employees) {
+            System.out.printf("%8s%20s%20s%20s\n", employee.getEmployeeId(), employee.getAccessRightEnum(), employee.getEmployeeUsername(), employee.getPassword());
+        }
+        System.out.println("Press Any Key To Continue");
+        sc.nextLine();
+    }
     
+    private void doCreateNewPartner() {
+        Scanner sc = new Scanner(System.in);
+        Partner newPartner = new Partner();
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: System Adminstration :: Create New Partner ***\n");
+        System.out.println("Enter New Partner Username> ");
+        newPartner.setUsername(sc.nextLine().trim());
+        System.out.println("Enter New Partner Password> ");
+        newPartner.setPassword(sc.nextLine().trim());
+        
+        try{
+            Long newPartnerId = partnerSessionBeanRemote.createNewPartner(newPartner);
+        } catch(PartnerExistException ex) {
+            System.out.println("An error has occured while creating the new Partner! The partner already exist!\n");
+        } catch (UnknownPersistenceException ex) {
+            System.out.println("An unknown error has occured whilre creating new Partner! "+ ex.getMessage() + "\n");
+        }
+    }
 }
