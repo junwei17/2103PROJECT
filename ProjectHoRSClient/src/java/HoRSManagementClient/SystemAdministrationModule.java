@@ -32,6 +32,7 @@ public class SystemAdministrationModule {
     public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, Employee currentEmployee, PartnerSessionBeanRemote partnerSessionBeanRemote) {
         this();
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
+        this.partnerSessionBeanRemote = partnerSessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
@@ -123,7 +124,9 @@ public class SystemAdministrationModule {
         newPartner.setPassword(sc.nextLine().trim());
         
         try{
+            //System.out.println(newPartner);
             Long newPartnerId = partnerSessionBeanRemote.createNewPartner(newPartner);
+            System.out.println("Partner Account created successfully! \n");
         } catch(PartnerExistException ex) {
             System.out.println("An error has occured while creating the new Partner! The partner already exist!\n");
         } catch (UnknownPersistenceException ex) {
