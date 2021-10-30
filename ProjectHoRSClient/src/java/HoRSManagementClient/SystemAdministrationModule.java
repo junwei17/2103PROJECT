@@ -63,10 +63,15 @@ public class SystemAdministrationModule {
                     doViewAllEmployees();
                 } else if (response == 3){
                     doCreateNewPartner();
+                } else if (response == 4) {
+                    viewAllPartners();
                 }
                 else if(response == 5) {
                     break;
                 }
+            }
+            if(response == 5) {
+                break;
             }
         }
     }
@@ -139,6 +144,7 @@ public class SystemAdministrationModule {
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: System Adminstration :: View All Partners ***\n");
         
         List<Partner> partners = partnerSessionBeanRemote.retrieveAllPartners();
+        System.out.println("Partners retrieved!");
         System.out.printf("%8s%20s%20s\n","Partner Id", "Partner Username", "Password");
         
         for(Partner partner : partners) {
