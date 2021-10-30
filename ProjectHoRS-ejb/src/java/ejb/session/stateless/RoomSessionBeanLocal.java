@@ -8,6 +8,8 @@ package ejb.session.stateless;
 import entity.Room;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.RoomExistException;
+import util.exception.UnknownPersistenceException;
 
 /**
  *
@@ -16,7 +18,7 @@ import javax.ejb.Local;
 @Local
 public interface RoomSessionBeanLocal {
     public List<Room> getRooms();
-    public Long createRoom(Room room);
+    public Long createRoom(Room room) throws RoomExistException, UnknownPersistenceException;
     public Long updateRoomStatus(Room room, boolean status);
     
 }
