@@ -6,10 +6,12 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import util.exception.PartnerExistException;
 import util.exception.UnknownPersistenceException;
 
@@ -42,6 +44,11 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
                 throw new UnknownPersistenceException(ex.getMessage());
             }
         }
+    }
+    
+    public List<Partner> retrieveAllPartners() {
+        Query query = em.createQuery("SELECT p FROM Partner p");
+        return query.getResultList();
     }
 
 }

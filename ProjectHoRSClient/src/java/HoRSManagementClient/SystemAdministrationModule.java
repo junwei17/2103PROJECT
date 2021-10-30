@@ -133,4 +133,19 @@ public class SystemAdministrationModule {
             System.out.println("An unknown error has occured whilre creating new Partner! "+ ex.getMessage() + "\n");
         }
     }
+    
+    private void viewAllPartners() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: System Adminstration :: View All Partners ***\n");
+        
+        List<Partner> partners = partnerSessionBeanRemote.retrieveAllPartners();
+        System.out.printf("%8s%20s%20s\n","Partner Id", "Partner Username", "Password");
+        
+        for(Partner partner : partners) {
+            System.out.printf("%8s%20s%20s\n", partner.getPartnerId(), partner.getUsername(), partner.getPassword());
+        }
+        
+        System.out.println("Press any key to continue...> ");
+        sc.nextLine();
+    }
 }
