@@ -7,9 +7,14 @@ package HoRSManagementClient;
 
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import entity.Employee;
 import entity.RoomType;
+import java.util.List;
 import java.util.Scanner;
+import util.enumeration.AccessRightEnum;
 import util.enumeration.AmenitiesEnum;
+import util.exception.DeleteRoomTypeException;
+import util.exception.InvalidAccessRightException;
 import util.exception.RoomExistException;
 import util.exception.RoomTypeNotFoundException;
 import util.exception.UnknownPersistenceException;
@@ -23,16 +28,21 @@ public class HotelOperationModule {
 
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
+    private Employee currentEmployee;
     
     public HotelOperationModule() {
     }
 
-    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote) {
+    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, Employee currentEmployee) {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
+        this.currentEmployee = currentEmployee;
     }
     
-    public void menuHotelOperation() {
+    public void menuHotelOperation() throws InvalidAccessRightException {
+        if(currentEmployee.getAccessRightEnum() != AccessRightEnum.ADMINISTRATOR) {
+            throw new InvalidAccessRightException("You do not have the ADMINISTRATOR rights to access the system administration module");
+        }
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
         
@@ -40,10 +50,8 @@ public class HotelOperationModule {
             System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation ***\n");
             System.out.println("1: Create New Room Type");
             System.out.println("2: View Room Type Details");
-            System.out.println("3: Update Room Type");
-            System.out.println("4: Delete Room Type");
-            System.out.println("5: View All Room Type");
-            System.out.println("6: Exit to the previous menu");
+            System.out.println("3: View All Room Type");
+            System.out.println("4: Exit to the previous menu");
             response = 0;
             
             while(response < 1 || response > 7) {
@@ -54,18 +62,14 @@ public class HotelOperationModule {
                     doCreateNewRoomType();
                 } else if (response == 2) {
                     doViewRoomTypeDetails();
-                } else if (response == 3){
-                    doUpdateRoomType();
-                } else if (response == 4) {
-                    doDeleteRoomType();
-                } else if (response == 5) {
+                } else if (response == 3) {
                     viewAllRoomTypes();
                 }
-                else if(response == 6) {
+                else if(response == 4) {
                     break;
                 }
             }
-            if(response == 6) {
+            if(response == 4) {
                 break;
             }
         }
@@ -190,6 +194,34 @@ public class HotelOperationModule {
     }
     
     public void doDeleteRoomType(RoomType roomType) {
+        Scanner sc = new Scanner(System.in);
+        String input;
         
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Delete Room Type ***\n");
+        System.out.printf("Confirm Delete Room Type %s (Room Type ID: %d) (Enter 'Y' to Delete)> ", roomType.getName(), roomType.getRoomTypeId());
+        input = sc.nextLine().trim();
+        
+        if(input.equals("Y")) {
+            try {
+                roomTypeSessionBeanRemote.deleteRoomType(roomType.getRoomTypeId());
+                System.out.println("Room Type is successfully deleted!");
+            } catch (RoomTypeNotFoundException | DeleteRoomTypeException ex){
+                System.out.println("An error has occured while deleting the Room Type: " + ex.getMessage() + "\n");
+            }
+        } else {
+            System.out.println("Room Type is not deleted!\n");
+        }
+    }
+    
+    public void viewAllRoomTypes() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: View All Room Types ***\n");
+        List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
+        System.out.printf("%8s%20s%20s%d%20s%d", "Room Type ID", "Name", "Description", "Size", "Bed", "Capacity");
+        for(RoomType roomType : roomTypes) {
+            System.out.printf("%8s%20s%20s%d%20s%d", roomType.getRoomTypeId(), roomType.getName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity());
+        }
+        System.out.println("Press any key to continue...> ");
+        sc.nextLine();
     }
 }

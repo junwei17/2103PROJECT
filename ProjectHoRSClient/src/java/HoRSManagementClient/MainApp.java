@@ -7,6 +7,8 @@ package HoRSManagementClient;
 
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
+import ejb.session.stateless.RoomSessionBeanRemote;
+import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
@@ -21,14 +23,20 @@ public class MainApp {
     private EmployeeSessionBeanRemote employeeSessionBeanRemote;
     private Employee currentEmployee;
     private SystemAdministrationModule systemAdministrationModule;
+    private HotelOperationModule hotelOperationModule;
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
+    private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
+    private RoomSessionBeanRemote roomSessionBeanRemote;
             
     public MainApp() {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote) {
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote) {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
+        this.roomSessionBeanRemote = roomSessionBeanRemote;
+        this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
+        
     }
     
     public void runApp() {
@@ -53,6 +61,7 @@ public class MainApp {
                         System.out.println("Login successful!\n");
                         System.out.println("Welcome, " + currentEmployee.getEmployeeUsername() + "!\n");
                         systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote);
+                        hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee);
                         menuMain();
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
@@ -116,10 +125,11 @@ public class MainApp {
             System.out.println("*** HoRS System ***\n");
             System.out.println("You are login as " + currentEmployee.getEmployeeUsername() + " with " + currentEmployee.getAccessRightEnum().toString() + " rights\n");
             System.out.println("1: System Adminstration");
-            System.out.println("2: Return to main menu to logout\n");
+            System.out.println("2: Hotel Operation");
+            System.out.println("3: Return to main menu to logout\n");
             response = 0;
             
-            while (response < 1 || response > 2) {
+            while (response < 1 || response > 3) {
                 System.out.print(">");
                 response = sc.nextInt();
                 
@@ -129,11 +139,17 @@ public class MainApp {
                     } catch (InvalidAccessRightException ex) {
                         System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
                     }
-                } else if (response == 2) {
+                } else if (response == 2){
+                    try {
+                        hotelOperationModule.menuHotelOperation();
+                    } catch (InvalidAccessRightException ex) {
+                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    }
+                }else if (response == 3) {
                     break;
                 }
             }
-            if(response == 2){
+            if(response == 3){
                 break;
             }
         }

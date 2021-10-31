@@ -33,15 +33,17 @@ public class Room implements Serializable {
     @JoinColumn(nullable = false)
     private Reservation reservation;
 
-    @OneToOne
-    private RoomRate roomType;
+    //@OneToOne
+    //private RoomRate roomType;
     
+    @ManyToOne
+    private RoomType roomType;
     
     public Room() {
     }
 
     public Room(RoomRate roomType, Integer roomNo, Integer sequenceNo, Reservation reservation, boolean status) {
-        this.roomType = roomType;
+        //this.roomType = roomType;
         this.roomNo = roomNo;
         this.sequenceNo = sequenceNo;
         this.reservation = reservation;
