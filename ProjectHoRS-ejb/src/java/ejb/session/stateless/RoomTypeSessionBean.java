@@ -32,12 +32,12 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     private EntityManager em;
 
     @Override
-    public Long createRoom(Room room) throws RoomExistException, UnknownPersistenceException {
+    public Long createRoomType(RoomType roomType) throws RoomExistException, UnknownPersistenceException {
         try {
-            em.persist(room);
+            em.persist(roomType);
             em.flush();
         
-            return room.getRoomId();
+            return roomType.getRoomTypeId();
         } catch (PersistenceException ex) {
             if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
             {
@@ -77,8 +77,8 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
             if(toBeUpdated.getName().equals(roomType.getName())) {
                 toBeUpdated.setDescription(roomType.getDescription());
                 toBeUpdated.setSize(roomType.getSize());
-                toBeUpdated.setBedCapacity(roomType.getBedCapacity());
-                toBeUpdated.setAmenities(roomType.getAmenities());
+                toBeUpdated.setCapacity(roomType.getCapacity());
+                toBeUpdated.setAmenitiesEnum(roomType.getAmenitiesEnum());
                 
             } else {
                 throw new UpdateRoomTypeException("Name of Room Type record to be updated does not match the existing record");

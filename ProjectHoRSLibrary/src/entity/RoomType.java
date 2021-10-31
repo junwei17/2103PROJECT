@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import util.enumeration.AmenitiesEnum;
 
 /**
  *
@@ -25,10 +26,11 @@ public class RoomType implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomTypeId;
     private String name;
+    private String bed;
     private String description;
     private Integer size;
-    private Integer bedCapacity;
-    private String amenities;
+    private Integer capacity;
+    private AmenitiesEnum amenitiesEnum;
     
     @OneToMany(mappedBy ="roomType")
     private List<Room> rooms;
@@ -110,32 +112,19 @@ public class RoomType implements Serializable {
     }
 
     /**
-     * @return the bedCapacity
+     * @return the capacity
      */
-    public Integer getBedCapacity() {
-        return bedCapacity;
+    public Integer getCapacity() {
+        return capacity;
     }
 
     /**
-     * @param bedCapacity the bedCapacity to set
+     * @param capacity the capacity to set
      */
-    public void setBedCapacity(Integer bedCapacity) {
-        this.bedCapacity = bedCapacity;
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
     }
 
-    /**
-     * @return the amenities
-     */
-    public String getAmenities() {
-        return amenities;
-    }
-
-    /**
-     * @param amenities the amenities to set
-     */
-    public void setAmenities(String amenities) {
-        this.amenities = amenities;
-    }
 
     /**
      * @return the rooms
@@ -149,6 +138,34 @@ public class RoomType implements Serializable {
      */
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
+    }
+
+    /**
+     * @return the bed
+     */
+    public String getBed() {
+        return bed;
+    }
+
+    /**
+     * @param bed the bed to set
+     */
+    public void setBed(String bed) {
+        this.bed = bed;
+    }
+
+    /**
+     * @return the amenitiesEnum
+     */
+    public AmenitiesEnum getAmenitiesEnum() {
+        return amenitiesEnum;
+    }
+
+    /**
+     * @param amenitiesEnum the amenitiesEnum to set
+     */
+    public void setAmenitiesEnum(AmenitiesEnum amenitiesEnum) {
+        this.amenitiesEnum = amenitiesEnum;
     }
     
 }

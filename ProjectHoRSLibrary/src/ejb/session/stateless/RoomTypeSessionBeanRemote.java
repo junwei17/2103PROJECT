@@ -21,7 +21,7 @@ import util.exception.UpdateRoomTypeException;
  */
 @Remote
 public interface RoomTypeSessionBeanRemote {
-    public Long createRoom(Room room) throws RoomExistException, UnknownPersistenceException;
+    public Long createRoomType(RoomType roomType) throws RoomExistException, UnknownPersistenceException;
     public RoomType viewRoomTypeDetails(Long roomName) throws RoomTypeNotFoundException;
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException, UpdateRoomTypeException;
     public void deleteRoomType(Long roomTypeId) throws RoomTypeNotFoundException, DeleteRoomTypeException;

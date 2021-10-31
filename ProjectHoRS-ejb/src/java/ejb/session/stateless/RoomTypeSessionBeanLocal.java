@@ -22,7 +22,7 @@ import util.exception.UpdateRoomTypeException;
 @Local
 public interface RoomTypeSessionBeanLocal {
 
-    public Long createRoom(Room room) throws RoomExistException, UnknownPersistenceException;
+    public Long createRoomType(RoomType roomType) throws RoomExistException, UnknownPersistenceException;
 
     public RoomType viewRoomTypeDetails(Long roomName) throws RoomTypeNotFoundException;
 
