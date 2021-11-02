@@ -40,7 +40,7 @@ public class HotelOperationModule {
     }
     
     public void menuHotelOperation() throws InvalidAccessRightException {
-        if(currentEmployee.getAccessRightEnum() != AccessRightEnum.ADMINISTRATOR) {
+        if(currentEmployee.getAccessRightEnum() != AccessRightEnum.OPERATION_MANAGER) {
             throw new InvalidAccessRightException("You do not have the ADMINISTRATOR rights to access the system administration module");
         }
         Scanner sc = new Scanner(System.in);
