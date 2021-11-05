@@ -6,6 +6,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,12 +30,13 @@ public class Room implements Serializable {
     private Integer roomNo;
     private boolean status;
     
-    @ManyToOne(optional = false)
+    /*@ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private Reservation reservation;
+    private List<Reservation> reservations;*/
 
     //@OneToOne
     public Room(Integer roomNo, boolean status, RoomType roomType) {
+        this();
         this.roomNo = roomNo;
         this.status = status;
         this.roomType = roomType;
@@ -44,6 +47,7 @@ public class Room implements Serializable {
     private RoomType roomType;
     
     public Room() {
+        //this.reservations = new ArrayList<Reservation>();
     }
     
     

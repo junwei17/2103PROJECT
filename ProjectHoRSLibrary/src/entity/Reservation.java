@@ -30,8 +30,8 @@ public class Reservation implements Serializable {
     private Date endDate;
     private BigDecimal fee;
     
-    @OneToMany(mappedBy = "Reservation")
-    private List<Room> rooms;
+    /*@OneToMany(mappedBy = "Reservation")
+    private List<Room> rooms;*/
 
     public Reservation() {
     }
@@ -40,7 +40,7 @@ public class Reservation implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.fee = fee;
-        this.rooms = rooms;
+       // this.rooms = rooms;
     }
     
     
@@ -126,15 +126,15 @@ public class Reservation implements Serializable {
     /**
      * @return the rooms
      */
-    public List<Room> getRooms() {
+    /*public List<Room> getRooms() {
         return rooms;
     }
 
     /**
      * @param rooms the rooms to set
      */
-    public void setRooms(List<Room> rooms) {
+    /*public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
-    }
+    }*/
     
 }

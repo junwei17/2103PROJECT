@@ -45,7 +45,11 @@ public class HotelOperationModule {
     
     public void menuHotelOperation() throws InvalidAccessRightException {
         if(currentEmployee.getAccessRightEnum() != AccessRightEnum.OPERATION_MANAGER) {
-            throw new InvalidAccessRightException("You do not have the ADMINISTRATOR rights to access the system administration module");
+            if(currentEmployee.getAccessRightEnum() == AccessRightEnum.SALES_MANAGER) {
+                menuRoomRates();
+            } else {
+                throw new InvalidAccessRightException("You do not have the OPERATION_MANAGER or SALES_MANAGER rights to access the system administration module");
+            }
         }
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
@@ -53,13 +57,16 @@ public class HotelOperationModule {
         while(true) {
             System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation ***\n");
             System.out.println("1: Create New Room Type");
-            System.out.println("2: View Room Type Details");
-            System.out.println("3: View All Room Type");
-            System.out.println("4: Create New Room");
-            System.out.println("5: Update Room");
-            System.out.println("6: Delete Room");
-            System.out.println("7: View All Rooms");
-            System.out.println("8: Exit to the previous menu");
+            System.out.println("2: View Room Type");
+            System.out.println("3: Update Room Type");
+            System.out.println("4: Delete Room Type Details");
+            System.out.println("5: View All Room Type");
+            System.out.println("6: Create New Room");
+            System.out.println("7: Update Room");
+            System.out.println("8: Delete Room");
+            System.out.println("9: View All Rooms");
+            System.out.println("10: View Room Exception Exception Report");
+            System.out.println("11: Exit to the previous menu");
             response = 0;
             
             while(response < 1 || response > 8) {
@@ -71,10 +78,28 @@ public class HotelOperationModule {
                 } else if (response == 2) {
                     doViewRoomTypeDetails();
                 } else if (response == 3) {
-                    viewAllRoomTypes();
+                    System.out.println("Enter RoomType ID> ");
+                    Long roomTypeId = sc.nextLong();
+                    try {
+                        RoomType currentRoomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(roomTypeId);
+                        doUpdateRoomType(currentRoomType);
+                    } catch (RoomTypeNotFoundException ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 } else if (response == 4) {
-                    doCreateNewRoom();
+                    System.out.println("Enter RoomType ID> ");
+                    Long roomTypeId = sc.nextLong();
+                    try {
+                        RoomType currentRoomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(roomTypeId);
+                        doDeleteRoomType(currentRoomType);
+                    } catch (RoomTypeNotFoundException ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 } else if (response == 5) {
+                    viewAllRoomTypes();
+                } else if (response == 6) {
+                    doCreateNewRoom();
+                } else if (response == 7) {
                     System.out.println("Enter Room ID> ");
                     Long roomId = sc.nextLong();
                     try {
@@ -83,7 +108,7 @@ public class HotelOperationModule {
                     } catch (RoomNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
-                } else if (response == 6) {
+                } else if (response == 8) {
                     System.out.println("Enter Room ID> ");
                     Long roomId = sc.nextLong();
                     try {
@@ -92,13 +117,15 @@ public class HotelOperationModule {
                     } catch (RoomNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
-                } else if (response == 7) {
+                } else if (response == 9) {
                     viewAllRooms();
-                }else if(response == 8) {
+                } else if (response == 10) {
+                    viewReport();
+                }else if(response == 11) {
                     break;
                 }
             }
-            if(response == 8) {
+            if(response == 11) {
                 break;
             }
         }
@@ -284,6 +311,7 @@ public class HotelOperationModule {
         }
         System.out.println("Enter New Room Number> ");
         newRoom.setRoomNo(sc.nextInt());
+        System.out.println("the room now is " + newRoom.getRoomId() + " " + newRoom.getRoomNo() + " " + newRoom.getStatus());
         try {
             Long newRoomId = roomSessionBeanRemote.createRoom(newRoom);
             System.out.println("New room " + newRoomId + " is created!");
@@ -391,9 +419,55 @@ public class HotelOperationModule {
         List<Room> rooms = roomSessionBeanRemote.viewAllRooms();
         System.out.printf("%8s%15s%20s%20s\n", "Room ID", "Room Type", "Room Number", "Room Status");
         for(Room room : rooms) {
-            System.out.printf("%8s%20s%20s%20s\n", room.getRoomId(), room.getRoomType(), room.getRoomNo(), room.getStatus());
+            System.out.printf("%8s%20s%20s%20s\n", room.getRoomId(), room.getRoomType().getRoomTypeId(), room.getRoomNo(), room.getStatus());
         }
         System.out.println("Press any key to continue...> ");
         sc.nextLine();
     }
+    
+    public void viewReport() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: View Room Allocation Exception Report ***\n");
+        
+    }
+    
+    public void menuRoomRates() {
+        Scanner sc = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true) {
+            System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation ***\n");
+            System.out.println("1: Create New Room Rate");
+            System.out.println("2: View Room Rate Details");
+            System.out.println("3: Update Room Rate");
+            System.out.println("4: Delete Room Rate");
+            System.out.println("5: View All Room Rates");
+            System.out.println("6: Exit to the previous menu");
+            response = 0;
+            
+            while(response < 1 || response > 6) {
+                System.out.println("> ");
+                
+                response = sc.nextInt();
+                if(response == 1) {
+                    doCreateNewRoomRate();
+                } else if (response == 2) {
+                    doViewRoomRateDetails();
+                } else if (response == 3) {
+                    doUpdateNewRoomRates();
+                } else if (response == 4) {
+                    doDeleteNewRoomRates();
+                } else if (response == 5) {
+                    viewAllRoomRates();
+                }else if(response == 6) {
+                    break;
+                }
+            }
+            if(response == 6) {
+                break;
+            }
+        }
+    }
+    
+    public void
 }
