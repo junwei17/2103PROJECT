@@ -8,8 +8,11 @@ package ejb.session.stateless;
 import entity.Room;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.DeleteRoomException;
 import util.exception.RoomExistException;
+import util.exception.RoomNotFoundException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateRoomException;
 
 /**
  *
@@ -17,7 +20,13 @@ import util.exception.UnknownPersistenceException;
  */
 @Remote
 public interface RoomSessionBeanRemote {
-    public List<Room> getRooms();
-    public Long createRoom(Room room) throws RoomExistException, UnknownPersistenceException;
-    public Long updateRoomStatus(Room room, boolean status);
+    public Long createRoom(Room newRoom) throws RoomExistException, UnknownPersistenceException;
+            
+    public List<Room> viewAllRooms();
+
+    public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException;
+
+    public void updateRoom(Room room) throws RoomNotFoundException, UpdateRoomException;
+
+    public Room viewRoomDetails(Long roomId) throws RoomNotFoundException;
 }

@@ -26,28 +26,24 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
     private Integer roomNo;
-    private Integer sequenceNo; 
     private boolean status;
     
-    @ManyToOne(optional = false)
+    /*@ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private Reservation reservation;
+    private Reservation reservation;*/
 
     //@OneToOne
+    public Room(Integer roomNo, boolean status, RoomType roomType) {
+        this.roomNo = roomNo;
+        this.status = status;
+        this.roomType = roomType;
+    }
     //private RoomRate roomType;
     
     @ManyToOne
     private RoomType roomType;
     
     public Room() {
-    }
-
-    public Room(RoomRate roomType, Integer roomNo, Integer sequenceNo, Reservation reservation, boolean status) {
-        //this.roomType = roomType;
-        this.roomNo = roomNo;
-        this.sequenceNo = sequenceNo;
-        this.reservation = reservation;
-        this.status = status;
     }
     
     
@@ -101,24 +97,11 @@ public class Room implements Serializable {
         this.roomNo = roomNo;
     }
 
-    /**
-     * @return the sequenceNo
-     */
-    public Integer getSequenceNo() {
-        return sequenceNo;
-    }
-
-    /**
-     * @param sequenceNo the sequenceNo to set
-     */
-    public void setSequenceNo(Integer sequenceNo) {
-        this.sequenceNo = sequenceNo;
-    }
 
     /**
      * @return the status
      */
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -127,6 +110,20 @@ public class Room implements Serializable {
      */
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    /**
+     * @return the roomType
+     */
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    /**
+     * @param roomType the roomType to set
+     */
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
     }
     
 }

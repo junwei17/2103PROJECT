@@ -60,7 +60,7 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     @Override
     public RoomType viewRoomTypeDetails(Long roomTypeId) throws RoomTypeNotFoundException {
         Query query = em.createQuery("SELECT rt FROM RoomType rt WHERE rt.roomTypeId = :inRoomTypeId");
-        query.setParameter("inName", roomTypeId);
+        query.setParameter("inRoomTypeId", roomTypeId);
         
         try {
             return(RoomType)query.getSingleResult();

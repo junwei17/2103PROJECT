@@ -7,20 +7,18 @@ package ejb.session.stateless;
 
 import entity.Room;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.ejb.Stateless;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
+import util.exception.DeleteRoomException;
 import util.exception.RoomExistException;
+import util.exception.RoomNotFoundException;
 import util.exception.UnknownPersistenceException;
+import util.exception.UpdateRoomException;
 
 /**
  *
@@ -30,30 +28,19 @@ import util.exception.UnknownPersistenceException;
 public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLocal {
 
     @PersistenceContext(unitName = "ProjectHoRS-ejbPU")
-    private EntityManager entityManager;
+    private EntityManager em;
     
 
     public RoomSessionBean() {
     }
     
-    @PostConstruct
-    public void postConstruct() 
-    {
-    }
-    
-    @PreDestroy
-    public void preDestroy()
-    {
-    }
-    
-    
     @Override
-    public Long createRoom(Room room) throws RoomExistException, UnknownPersistenceException {
+    public Long createRoom(Room newRoom) throws RoomExistException, UnknownPersistenceException {
         try {
-            entityManager.persist(room);
-            entityManager.flush();
+            em.persist(newRoom);
+            em.flush();
         
-            return room.getRoomId();
+            return newRoom.getRoomId();
         } catch (PersistenceException ex) {
             if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
             {
@@ -73,24 +60,48 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
         }
     }
     
-   
-    
     @Override
-    public Long updateRoomStatus(Room room, boolean status)
-    {
-        room.setStatus(status);
+    public Room viewRoomDetails(Long roomId) throws RoomNotFoundException {
+        Query query = em.createQuery("SELECT r FROM Room r WHERE r.roomId = :inRoomId");
+        query.setParameter("inRoomId", roomId);
         
-        return room.getRoomId();
+        try {
+            return(Room)query.getSingleResult();
+        }catch (NoResultException | NonUniqueResultException ex) {
+            throw new RoomNotFoundException("The Room Type for " + roomId + " does not exists!");
+        }
+        
+    }
+
+    @Override
+    public void updateRoom(Room room) throws RoomNotFoundException, UpdateRoomException {
+        if(room != null && room.getRoomId() != null) {
+            Room toBeUpdated = viewRoomDetails(room.getRoomId());
+            if(toBeUpdated.getRoomNo().equals(room.getRoomNo())) {
+                toBeUpdated.setRoomType(room.getRoomType());
+                toBeUpdated.setStatus(room.getStatus());      
+            } else {
+                throw new UpdateRoomException("Room Number of Room record to be updated does not match the existing record");
+            }
+        } else {
+            throw new RoomNotFoundException("Room not found or Room ID not provided!");
+        }
     }
     
     @Override
-    public List<Room> getRooms() 
-    {
-        Query query = entityManager.createQuery("SELECT r FROM Room r");
-        
+    public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException {
+        Room toBeRemoved = viewRoomDetails(roomId);
+        if(!toBeRemoved.getStatus()) {
+            em.remove(toBeRemoved);
+        } else {
+            throw new DeleteRoomException("Room ID " + roomId + " is currently in used, thus it cannot be deleted!");
+        }
+    }
+    
+    @Override
+    public List<Room> viewAllRooms() {
+        Query query = em.createQuery("SELECT r FROM Room r");
         return query.getResultList();
     }
-        
-    
    
 }

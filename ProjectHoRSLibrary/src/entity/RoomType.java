@@ -34,6 +34,9 @@ public class RoomType implements Serializable {
     
     @OneToMany(mappedBy ="roomType")
     private List<Room> rooms;
+
+    public RoomType() {
+    }
     
 
     public Long getRoomTypeId() {
