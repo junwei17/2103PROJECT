@@ -290,7 +290,7 @@ public class HotelOperationModule {
         } catch(UnknownPersistenceException ex) {
             System.out.println("An unknown error has occured while creating the room type!: " + ex.getMessage() + "\n");
         } catch(RoomExistException ex) {
-            System.out.println("An error has occured while creating the new Room!: The Room already exists!\n");
+            System.out.println("An error has occured while creating the new Room!: The Room already exists!\n" + ex.getMessage());
         }
     }
     

@@ -46,7 +46,7 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
             {
                 if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
                 {
-                    throw new RoomExistException();
+                    throw new RoomExistException("here");
                 }
                 else
                 {

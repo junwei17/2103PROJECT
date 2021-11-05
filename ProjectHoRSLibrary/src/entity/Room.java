@@ -28,9 +28,9 @@ public class Room implements Serializable {
     private Integer roomNo;
     private boolean status;
     
-    /*@ManyToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private Reservation reservation;*/
+    private Reservation reservation;
 
     //@OneToOne
     public Room(Integer roomNo, boolean status, RoomType roomType) {

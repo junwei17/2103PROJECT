@@ -7,6 +7,7 @@
     <class>entity.Partner</class>
     <class>entity.Reservation</class>
     <class>entity.Room</class>
+    <class>entity.RoomRate</class>
     <class>entity.RoomType</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
