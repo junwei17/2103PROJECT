@@ -25,7 +25,7 @@ public class RoomRate implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long RoomTypeId;
+    private Long RoomRateId;
     private String name;
     private RateTypeEnum rateType;
     private BigDecimal ratePerNight;
@@ -47,29 +47,29 @@ public class RoomRate implements Serializable {
     }
     
 
-    public Long getRoomTypeId() {
-        return RoomTypeId;
+    public Long getRoomRateId() {
+        return RoomRateId;
     }
 
-    public void setRoomTypeId(Long RoomTypeId) {
-        this.RoomTypeId = RoomTypeId;
+    public void setRoomRateId(Long RoomRateId) {
+        this.RoomRateId = RoomRateId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (RoomTypeId != null ? RoomTypeId.hashCode() : 0);
+        hash += (getRoomRateId() != null ? getRoomRateId().hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the RoomTypeId fields are not set
+        // TODO: Warning - this method won't work in the case the RoomRateId fields are not set
         if (!(object instanceof RoomRate)) {
             return false;
         }
         RoomRate other = (RoomRate) object;
-        if ((this.RoomTypeId == null && other.RoomTypeId != null) || (this.RoomTypeId != null && !this.RoomTypeId.equals(other.RoomTypeId))) {
+        if ((this.getRoomRateId() == null && other.getRoomRateId() != null) || (this.getRoomRateId() != null && !this.RoomRateId.equals(other.RoomRateId))) {
             return false;
         }
         return true;
@@ -77,7 +77,7 @@ public class RoomRate implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.RoomType[ id=" + RoomTypeId + " ]";
+        return "entity.RoomType[ id=" + getRoomRateId() + " ]";
     }
 
     /**

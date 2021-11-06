@@ -8,8 +8,13 @@ package ejb.session.stateless;
 import entity.RoomRate;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import util.exception.RoomExistException;
+import util.exception.RoomRateExistException;
 import util.exception.RoomRateNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateRoomException;
@@ -31,16 +36,16 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     @Override
     public Long createRoomRate(RoomRate newRoomRate) throws RoomRateExistException, UnknownPersistenceException {
         try {
-            em.persist(newRoom);
+            em.persist(newRoomRate);
             em.flush();
         
-            return newRoom.getRoomId();
+            return newRoomRate.getRoomRateId();
         } catch (PersistenceException ex) {
             if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
             {
                 if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
                 {
-                    throw new RoomExistException("here");
+                    throw new RoomRateExistException("here");
                 }
                 else
                 {
@@ -55,23 +60,23 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     }
     
     @Override
-    public Room viewRoomDetails(Long roomId) throws RoomNotFoundException {
-        Query query = em.createQuery("SELECT r FROM Room r WHERE r.roomId = :inRoomId");
-        query.setParameter("inRoomId", roomId);
+    public RoomRate viewRoomRateDetails(Long roomRateId) throws RoomRateNotFoundException {
+        Query query = em.createQuery("SELECT rr FROM RoomRate rr WHERE rr.roomRateId = :inRoomRateId");
+        query.setParameter("inRoomRateId", roomRateId);
         
         try {
-            return(Room)query.getSingleResult();
+            return(RoomRate)query.getSingleResult();
         }catch (NoResultException | NonUniqueResultException ex) {
-            throw new RoomNotFoundException("The Room Type for " + roomId + " does not exists!");
+            throw new RoomRateNotFoundException("The Room Type for " + roomRateId + " does not exists!");
         }
         
     }
 
     @Override
-    public void updateRoom(RoomRate roomRate) throws RoomRateNotFoundException, UpdateRoomRateException {
-        if(roomRate != null && roomRate.getRoomId() != null) {
-            RoomRate toBeUpdated = viewRoomDetails(roomRate.getRoomId());
-            if(toBeUpdated.getRoomNo().equals(room.getRoomNo())) {
+    public void updateRoomRate(RoomRate roomRate) throws RoomRateNotFoundException, UpdateRoomRateException {
+        if(roomRate != null && roomRate.getRoomRateId() != null) {
+            RoomRate toBeUpdated = viewRoomRateDetails(roomRate.getRoomRateId());
+            if(toBeUpdated.getRoomRateNo().equals(roomRate.getRoomNo())) {
                 toBeUpdated.setRoomType(room.getRoomType());
                 toBeUpdated.setStatus(room.getStatus());      
             } else {
