@@ -22,6 +22,7 @@ import util.enumeration.AccessRightEnum;
 import util.enumeration.AmenitiesEnum;
 import util.enumeration.RateTypeEnum;
 import util.exception.DeleteRoomException;
+import util.exception.DeleteRoomRateException;
 import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
 import util.exception.RoomExistException;
@@ -77,11 +78,11 @@ public class HotelOperationModule {
             System.out.println("7: Update Room");
             System.out.println("8: Delete Room");
             System.out.println("9: View All Rooms");
-            System.out.println("10: View Room Exception Exception Report");
+            System.out.println("10: View Room Allocation Exception Report");
             System.out.println("11: Exit to the previous menu");
             response = 0;
             
-            while(response < 1 || response > 8) {
+            while(response < 1 || response > 11) {
                 System.out.println("> ");
                 
                 response = sc.nextInt();
@@ -468,7 +469,16 @@ public class HotelOperationModule {
                 } else if (response == 3) {
                     doUpdateRoomRate();
                 } else if (response == 4) {
-                    doDeleteRoomRate();
+                    System.out.print("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Delete Room Rate  ***\n");
+                    System.out.print("Enter Room Rate ID that will be deleted >");
+                    Long roomRateId = sc.nextLong();
+                    try {
+                        RoomRate currentRoomRate = roomRateSessionBeanRemote.viewRoomRateDetails(roomRateId);
+                        doDeleteRoomRate(currentRoomRate);
+                    } catch(RoomRateNotFoundException ex) {
+                        System.out.println("No room rate found!");
+                    }
+                    
                 } else if (response == 5) {
                     viewAllRoomRates();
                 }else if(response == 6) {
@@ -489,17 +499,15 @@ public class HotelOperationModule {
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Create New Room Rate ***\n");
         System.out.println("Enter New Room Rate Name> ");
         newRoomRate.setName(sc.nextLine().trim());
-        System.out.println("Enter New Room Rate Room Type> ");
-        try {
-            RoomType roomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(sc.nextLong());
-            newRoomRate.setRoomType(roomType);
-        } catch (RoomTypeNotFoundException ex) {
-            System.out.println("Room Type Not Found!");
+        System.out.println("Enter y if Room Rate is disabled, n if Room Rate is enabled> ");
+        String input = sc.nextLine().trim();
+        if(input.equals("y")) {
+            newRoomRate.setDisabled(false);
+        } else {
+            newRoomRate.setDisabled(true);
         }
-        System.out.println("Enter New Room Rate Per Night> ");
-        newRoomRate.setRatePerNight(sc.nextBigDecimal());
         System.out.println("Enter New Room Rate Validity Start Date (dd/MM/yyyy)> ");
-        String start = sc.nextLine();
+        String start = sc.nextLine().trim();
         Date date = null;
         if(null != start && start.trim().length() > 0){
             try {
@@ -509,8 +517,8 @@ public class HotelOperationModule {
             }
         } 
         newRoomRate.setValidityStartDate(date);
-        System.out.println("Enter New Room Rate Validity End Date> ");
-        String end = sc.nextLine();
+        System.out.println("Enter New Room Rate Validity End Date (dd/MM/yyyy)> ");
+        String end = sc.nextLine().trim();
         Date dateEnd = null;
         if(null != end && end.trim().length() > 0){
             try {
@@ -531,11 +539,20 @@ public class HotelOperationModule {
                 System.out.println("Invalid Option! Please try again!");
             }
         }
+        System.out.println("Enter New Room Rate Per Night> ");
+        newRoomRate.setRatePerNight(sc.nextBigDecimal());
+        System.out.println("Enter New Room Rate Room Type> ");
+        try {
+            RoomType roomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(sc.nextLong());
+            newRoomRate.setRoomType(roomType);
+        } catch (RoomTypeNotFoundException ex) {
+            System.out.println("Room Type Not Found!");
+        }
         try {
             Long newRoomRateId = roomRateSessionBeanRemote.createRoomRate(newRoomRate);
             System.out.println("New Room Rate " + newRoomRateId + " is created!");
         } catch(UnknownPersistenceException ex) {
-            System.out.println("An unknown error has occured while creating the room type!: " + ex.getMessage() + "\n");
+            System.out.println("An unknown error has occured while creating the room Rate!: " + ex.getMessage() + "\n");
         } catch(RoomRateExistException ex) {
             System.out.println("An error has occured while creating the new Room Type!: The Room Type already exists!\n");
         }
@@ -551,10 +568,9 @@ public class HotelOperationModule {
         
         try {
             RoomRate roomRate = roomRateSessionBeanRemote.viewRoomRateDetails(roomRateId);
-            System.out.printf("%8s%15s%20s%20s%20s%20s%20s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
-            System.out.printf("%8s%20s%20s%20s%20s%20s%20\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), roomRate.getValidityStartDate(), roomRate.getValidityEndDate(), roomRate.isDisabled());
+            System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
+            System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), roomRate.getValidityStartDate().toString(), roomRate.getValidityEndDate().toString(), roomRate.isDisabled());
             System.out.println("---------------------------");
-            System.out.println("3: Exit");
             System.out.println("> ");
             response = sc.nextInt();
         } catch (RoomRateNotFoundException ex) {
@@ -571,13 +587,55 @@ public class HotelOperationModule {
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Update Room Rate ***\n");
         System.out.println("Enter Room Rate ID> ");
         Long roomRateId = sc.nextLong();
-        
+        sc.nextLine();
         try {
             RoomRate roomRate = roomRateSessionBeanRemote.viewRoomRateDetails(roomRateId);
             System.out.println("Enter Room Rate Name (Enter n if no change)> ");
             String roomRateName = sc.nextLine().trim();
             if(!roomRateName.equals("n")) {
                 roomRate.setName(roomRateName);
+            }
+            System.out.println("Enter Room Rate Validity Start Date (Enter n if no change)> ");
+            String start = sc.nextLine().trim();
+            if(!start.equals("n")) {
+                Date dateStart = null;
+                if(null != start && start.trim().length() > 0){
+                  try {
+                      dateStart = format.parse(start);
+                      roomRate.setValidityStartDate(dateStart);
+                  } catch (ParseException ex) {
+                      System.out.println("Problems parsing the given date!");
+                  }
+                }
+            }
+            System.out.println("Enter Room Rate Validity Start Date (Enter n if no change)> ");
+            String end = sc.nextLine().trim();
+            if(!end.equals("n")) {
+            Date dateEnd = null;
+            if(null != end && end.trim().length() > 0){
+              try {
+                  dateEnd = format.parse(end);
+                  roomRate.setValidityEndDate(dateEnd);
+              } catch (ParseException ex) {
+                  System.out.println("Problems parsing the given date!");
+              }
+            }
+            
+            }
+            System.out.println("Enter Room Rate Type (Enter n if no change)> ");
+            String roomRateType = sc.nextLine().trim();
+            if(!roomRateType.equals("n")) {
+                while(true) {
+                    System.out.println("Select New Room Rate Type (1: Published, 2: Normal, 3: Peak, 4: Promotion) > ");
+                    Integer roomRateTypeEnum = sc.nextInt();
+            
+                    if(roomRateTypeEnum >= 1 && roomRateTypeEnum <=4) {
+                        roomRate.setRateType(RateTypeEnum.values()[roomRateTypeEnum - 1]);  
+                        break;
+                    } else {
+                        System.out.println("Invalid Option! Please try again!");
+                    }
+                }
             }
             System.out.println("Enter Room Rate Per Night (Enter -1 if no change)> ");
             BigDecimal roomRatePerNight = sc.nextBigDecimal();
@@ -594,42 +652,6 @@ public class HotelOperationModule {
                     System.out.println("Room Type not found!");
                 }
             }
-            System.out.println("Enter Room Rate Validity Start Date (Enter -1 if no change)> ");
-            String start = sc.nextLine();
-            Date dateStart = null;
-            if(null != start && start.trim().length() > 0){
-              try {
-                  dateStart = format.parse(start);
-              } catch (ParseException ex) {
-                  System.out.println("Problems parsing the given date!");
-              }
-            }
-            System.out.println("Enter Room Rate Validity Start Date (Enter -1 if no change)> ");
-            String end = sc.nextLine();
-            Date dateEnd = null;
-            if(null != end && end.trim().length() > 0){
-              try {
-                  dateEnd = format.parse(start);
-              } catch (ParseException ex) {
-                  System.out.println("Problems parsing the given date!");
-              }
-            }
-            roomRate.setValidityEndDate(dateEnd);
-            System.out.println("Enter Room Rate Type (Enter n if no change)> ");
-            String roomRateType = sc.nextLine().trim();
-            if(!roomRateType.equals("n")) {
-                while(true) {
-                    System.out.println("Select New Room Rate Type (1: Published, 2: Normal, 3: Peak, 4: Promotion) > ");
-                    Integer roomRateTypeEnum = sc.nextInt();
-            
-                    if(roomRateTypeEnum >= 1 && roomRateTypeEnum <=4) {
-                        roomRate.setRateType(RateTypeEnum.values()[roomRateTypeEnum - 1]);  
-                        break;
-                    } else {
-                        System.out.println("Invalid Option! Please try again!");
-                    }
-                }
-            }
             try {
                 roomRateSessionBeanRemote.updateRoomRate(roomRate);
             } catch(RoomRateNotFoundException | UpdateRoomRateException ex) {
@@ -640,8 +662,24 @@ public class HotelOperationModule {
         }  
     }
     
-    public void doDeleteRoomRate() {
-        System.out.println("cant do this shit");
+    public void doDeleteRoomRate(RoomRate currentRoomRate) {
+        Scanner sc = new Scanner(System.in);
+        String input;
+        
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Delete Room Rate  ***\n");
+        System.out.printf("Confirm Delete Room %s (Room Type ID: %d) (Enter 'Y' to Delete)> ", currentRoomRate.getName(), currentRoomRate.getRoomRateId());
+        input = sc.nextLine().trim();
+        
+        if(input.equals("Y")) {
+            try {
+                roomRateSessionBeanRemote.deleteRoomRate(currentRoomRate.getRoomRateId());
+                System.out.println("Room Rate is successfully deleted!");
+            } catch (RoomRateNotFoundException ex){
+                System.out.println("An error has occured while deleting the Room Rate: " + ex.getMessage() + "\n");
+            }
+        } else {
+            System.out.println("Room Rate is not deleted!\n");
+        }
     }
     
     public void viewAllRoomRates() {
