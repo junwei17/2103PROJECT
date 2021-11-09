@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.RoomRate;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -76,30 +77,35 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     public void updateRoomRate(RoomRate roomRate) throws RoomRateNotFoundException, UpdateRoomRateException {
         if(roomRate != null && roomRate.getRoomRateId() != null) {
             RoomRate toBeUpdated = viewRoomRateDetails(roomRate.getRoomRateId());
-            if(toBeUpdated.getRoomRateNo().equals(roomRate.getRoomNo())) {
-                toBeUpdated.setRoomType(room.getRoomType());
-                toBeUpdated.setStatus(room.getStatus());      
+            if(toBeUpdated.getName().equals(roomRate.getName())) {
+                toBeUpdated.setRoomType(roomRate.getRoomType());
+                toBeUpdated.setRateType(roomRate.getRateType());
+                toBeUpdated.setValidityStartDate(roomRate.getValidityStartDate());
+                toBeUpdated.setValidityEndDate(roomRate.getValidityEndDate());
+                toBeUpdated.setRatePerNight(roomRate.getRatePerNight());
+                toBeUpdated.setDisabled(roomRate.isDisabled());
             } else {
-                throw new UpdateRateRoomException("Room Number of Room record to be updated does not match the existing record");
+                throw new UpdateRoomRateException("Room Rate name of Room Rate record to be updated does not match the existing record");
             }
         } else {
-            throw new RoomRateNotFoundException("Room not found or Room ID not provided!");
+            throw new RoomRateNotFoundException("Room Rate not found!");
         }
     }
     
-    @Override
-    public void deleteRoom(Long roomId) throws RoomNotFoundException, DeleteRoomException {
-        Room toBeRemoved = viewRoomDetails(roomId);
+    /*@Override
+    public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException, DeleteRoomRateException {
+        RoomRate toBeRemoved = viewRoomRateDetails(roomRateId);
         if(!toBeRemoved.getStatus()) {
             em.remove(toBeRemoved);
         } else {
             throw new DeleteRoomException("Room ID " + roomId + " is currently in used, thus it cannot be deleted!");
         }
-    }
+    }*/
+
     
     @Override
-    public List<Room> viewAllRooms() {
-        Query query = em.createQuery("SELECT r FROM Room r");
+    public List<RoomRate> viewAllRoomRates() {
+        Query query = em.createQuery("SELECT rr FROM RoomRate rr");
         return query.getResultList();
     }
 

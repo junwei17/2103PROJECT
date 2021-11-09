@@ -25,15 +25,16 @@ public class RoomRate implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long RoomRateId;
+    private Long roomRateId;
     private String name;
     private RateTypeEnum rateType;
     private BigDecimal ratePerNight;
     private Date validityStartDate;
     private Date validityEndDate;
+    private boolean disabled;
     
-    //@ManyToOne
-    //private RoomType roomType;
+    @ManyToOne
+    private RoomType roomType;
 
     public RoomRate(String name, RateTypeEnum rateType, BigDecimal ratePerNight, Date validityStartDate, Date validityEndDate) {
         this.name = name;
@@ -44,15 +45,16 @@ public class RoomRate implements Serializable {
     }
 
     public RoomRate() {
+        this.disabled = false;
     }
     
 
     public Long getRoomRateId() {
-        return RoomRateId;
+        return roomRateId;
     }
 
-    public void setRoomRateId(Long RoomRateId) {
-        this.RoomRateId = RoomRateId;
+    public void setRoomRateId(Long roomRateId) {
+        this.roomRateId = roomRateId;
     }
 
     @Override
@@ -64,12 +66,12 @@ public class RoomRate implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the RoomRateId fields are not set
+        // TODO: Warning - this method won't work in the case the roomRateId fields are not set
         if (!(object instanceof RoomRate)) {
             return false;
         }
         RoomRate other = (RoomRate) object;
-        if ((this.getRoomRateId() == null && other.getRoomRateId() != null) || (this.getRoomRateId() != null && !this.RoomRateId.equals(other.RoomRateId))) {
+        if ((this.getRoomRateId() == null && other.getRoomRateId() != null) || (this.getRoomRateId() != null && !this.roomRateId.equals(other.roomRateId))) {
             return false;
         }
         return true;
@@ -148,6 +150,34 @@ public class RoomRate implements Serializable {
      */
     public void setValidityEndDate(Date validityEndDate) {
         this.validityEndDate = validityEndDate;
+    }
+
+    /**
+     * @return the roomType
+     */
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    /**
+     * @param roomType the roomType to set
+     */
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
+    }
+
+    /**
+     * @return the disabled
+     */
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    /**
+     * @param disabled the disabled to set
+     */
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
     
 }

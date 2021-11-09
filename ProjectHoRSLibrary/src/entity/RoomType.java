@@ -34,6 +34,9 @@ public class RoomType implements Serializable {
     
     @OneToMany(mappedBy ="roomType")
     private List<Room> rooms;
+    
+    @OneToMany(mappedBy ="roomType")
+    private List<RoomRate> roomRates;
 
     public RoomType() {
     }
@@ -169,6 +172,20 @@ public class RoomType implements Serializable {
      */
     public void setAmenitiesEnum(AmenitiesEnum amenitiesEnum) {
         this.amenitiesEnum = amenitiesEnum;
+    }
+
+    /**
+     * @return the roomRates
+     */
+    public List<RoomRate> getRoomRates() {
+        return roomRates;
+    }
+
+    /**
+     * @param roomRates the roomRates to set
+     */
+    public void setRoomRates(List<RoomRate> roomRates) {
+        this.roomRates = roomRates;
     }
     
 }

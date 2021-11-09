@@ -9,11 +9,16 @@ import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
 import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import util.enumeration.AccessRightEnum;
 import util.enumeration.AmenitiesEnum;
+import util.enumeration.RateTypeEnum;
 import util.exception.DeleteRoomException;
 import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
@@ -469,5 +474,63 @@ public class HotelOperationModule {
         }
     }
     
-    public void
+    public void doCreateNewRoomRate() {
+        Scanner sc = new Scanner(System.in);
+        RoomRate newRoomRate = new RoomRate();
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Create New Room Rate ***\n");
+        System.out.println("Enter New Room Rate Name> ");
+        newRoomRate.setName(sc.nextLine().trim());
+        System.out.println("Enter New Room Rate Room Type> ");
+        try {
+            RoomType roomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(sc.nextLong());
+            newRoomRate.setRoomType(roomType);
+        } catch (RoomTypeNotFoundException ex) {
+            System.out.println("Room Type Not Found!");
+        }
+        System.out.println("Enter New Room Rate Per Night> ");
+        newRoomRate.setRatePerNight(sc.nextBigDecimal());
+        System.out.println("Enter New Room Rate Validity Start Date (dd/MM/yyyy)> ");
+        String start = sc.nextLine();
+        Date date = null;
+        if(null != start && start.trim().length() > 0){
+            try {
+               date = format.parse(start);
+            } catch (ParseException ex) {
+                System.out.println("Problems parsing the given date!");
+            }
+        } 
+        newRoomRate.setValidityStartDate(date);
+        System.out.println("Enter New Room Rate Validity End Date> ");
+        String end = sc.nextLine();
+        Date dateEnd = null;
+        if(null != start && start.trim().length() > 0){
+            try {
+               dateEnd = format.parse(end);
+            } catch (ParseException ex) {
+                System.out.println("Problems parsing the given date!");
+            }
+        } 
+        newRoomRate.setValidityStartDate(dateEnd);
+        while(true) {
+            System.out.println("Select New Room Rate Type (1: Published, 2: Normal, 3: Peak, 4: Promotion) > ");
+            Integer roomRateTypeEnum = sc.nextInt();
+            
+            if(roomRateTypeEnum >= 1 && roomRateTypeEnum <=4) {
+              newRoomRate.setRateType(RateTypeEnum.values()[roomRateTypeEnum - 1]);  
+              break;
+            } else {
+                System.out.println("Invalid Option! Please try again!");
+            }
+        }
+        try {
+            Long newRoomRateId = roomRateSessionBeanRemote.createRoomRate(newRoomTyp);
+            System.out.println("New Room Type " + newRoomTypeId + " is created!");
+        } catch(UnknownPersistenceException ex) {
+            System.out.println("An unknown error has occured while creating the room type!: " + ex.getMessage() + "\n");
+        } catch(RoomExistException ex) {
+            System.out.println("An error has occured while creating the new Room Type!: The Room Type already exists!\n");
+        }
+    }
 }
