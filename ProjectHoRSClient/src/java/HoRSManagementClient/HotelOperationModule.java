@@ -5,6 +5,7 @@
  */
 package HoRSManagementClient;
 
+import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
@@ -24,6 +25,7 @@ import util.exception.DeleteRoomTypeException;
 import util.exception.InvalidAccessRightException;
 import util.exception.RoomExistException;
 import util.exception.RoomNotFoundException;
+import util.exception.RoomRateExistException;
 import util.exception.RoomTypeNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateRoomException;
@@ -38,13 +40,15 @@ public class HotelOperationModule {
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private Employee currentEmployee;
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     
     public HotelOperationModule() {
     }
 
-    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, Employee currentEmployee) {
+    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, Employee currentEmployee, RoomRateSessionBeanRemote roomRateSessionBeanRemote) {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
+        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
@@ -525,12 +529,16 @@ public class HotelOperationModule {
             }
         }
         try {
-            Long newRoomRateId = roomRateSessionBeanRemote.createRoomRate(newRoomTyp);
-            System.out.println("New Room Type " + newRoomTypeId + " is created!");
+            Long newRoomRateId = roomRateSessionBeanRemote.createRoomRate(newRoomRate);
+            System.out.println("New Room Rate " + newRoomRateId + " is created!");
         } catch(UnknownPersistenceException ex) {
             System.out.println("An unknown error has occured while creating the room type!: " + ex.getMessage() + "\n");
-        } catch(RoomExistException ex) {
+        } catch(RoomRateExistException ex) {
             System.out.println("An error has occured while creating the new Room Type!: The Room Type already exists!\n");
         }
+    }
+    
+    private void doViewRoomRateDetails() {
+        
     }
 }

@@ -7,6 +7,7 @@ package HoRSManagementClient;
 
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
+import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
@@ -27,15 +28,17 @@ public class MainApp {
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
             
     public MainApp() {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote) {
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote) {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
+        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         
     }
     
@@ -61,7 +64,7 @@ public class MainApp {
                         System.out.println("Login successful!\n");
                         System.out.println("Welcome, " + currentEmployee.getEmployeeUsername() + "!\n");
                         systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote);
-                        hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee);
+                        hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee, roomRateSessionBeanRemote);
                         menuMain();
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
