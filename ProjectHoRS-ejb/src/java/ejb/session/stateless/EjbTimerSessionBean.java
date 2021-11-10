@@ -32,8 +32,7 @@ public class EjbTimerSessionBean implements EjbTimerSessionBeanRemote, EjbTimerS
     // @Schedule(hour = "*", minute = "*/5", info = "productEntityReorderQuantityCheckTimer")
     public void allocateRoomTimer()
     {
-        Date current = new Date();
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        
         Query query = em.createQuery("SELECT r FROM Reservation r");
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
         System.out.println("********** EjbTimerSessionBean.productEntityReorderQuantityCheckTimer(): Timeout at " + timeStamp);

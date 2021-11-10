@@ -51,27 +51,25 @@ public class Reservation implements Serializable {
     private Integer numberOfRooms;
     
     
-    /*@OneToMany(mappedBy = "Reservation")
-    private List<Room> rooms;*/
+    @OneToMany(mappedBy = "reservation")
+    private List<ReservationRoom> reservationRooms;
     
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private RoomType roomType;
-
+    private Guest guest;
+    
+    @ManyToOne
+    private Partner partner;
     
     public Reservation() {
     }
 
-    public Reservation(Date startDate, Date endDate, BigDecimal fee, List<Room> rooms) {
+    public Reservation(Date startDate, Date endDate, BigDecimal fee) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.fee = fee;
        // this.rooms = rooms;
     }
-    
-    
-    
-    
+   
     
 
     public Long getReservationId() {
@@ -150,6 +148,21 @@ public class Reservation implements Serializable {
         this.fee = fee;
     }
 
+
+    /**
+     * @return the reservationRooms
+     */
+    public List<ReservationRoom> getReservationRooms() {
+        return reservationRooms;
+    }
+
+    /**
+     * @param reservationRooms the reservationRooms to set
+     */
+    public void setReservationRooms(List<ReservationRoom> reservationRooms) {
+        this.reservationRooms = reservationRooms;
+    }
+
     /**
      * @return the numberOfRooms
      */
@@ -165,18 +178,34 @@ public class Reservation implements Serializable {
     }
 
     /**
-     * @return the roomType
+     * @return the guest
      */
-    public RoomType getRoomType() {
-        return roomType;
+    public Guest getGuest() {
+        return guest;
     }
 
     /**
-     * @param roomType the roomType to set
+     * @param guest the guest to set
      */
-    public void setRoomType(RoomType roomType) {
-        this.roomType = roomType;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
+
+    /**
+     * @return the partner
+     */
+    public Partner getPartner() {
+        return partner;
+    }
+
+    /**
+     * @param partner the partner to set
+     */
+    public void setPartner(Partner partner) {
+        this.partner = partner;
+    }
+
+  
 
     /**
      * @return the rooms

@@ -9,8 +9,10 @@ import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
 import entity.Employee;
 import entity.Partner;
+import entity.RoomType;
 import java.util.List;
 import java.util.Scanner;
+import javafx.util.Pair;
 import util.enumeration.AccessRightEnum;
 import util.exception.EmployeeUsernameExistException;
 import util.exception.InvalidAccessRightException;
@@ -40,7 +42,6 @@ public class SystemAdministrationModule {
         if(currentEmployee.getAccessRightEnum() != AccessRightEnum.ADMINISTRATOR) {
             throw new InvalidAccessRightException("You do not have the ADMINISTRATOR rights to access the system administration module");
         }
-        
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
         
@@ -87,7 +88,7 @@ public class SystemAdministrationModule {
         newEmployee.setPassword(sc.nextLine().trim());
         
         while(true) {
-            System.out.println("Select Access Right (1: ADMINISTRATOR, 2: OPERATION_MANAGER, 3:SALES_MANAGER, 4: EMPLOYEE)\n");
+            System.out.println("Select Access Right (1: ADMINISTRATOR, 2: OPERATION_MANAGER, 3:SALES_MANAGER, 4: GUEST_RELATION_OFFICER)\n");
             Integer accessRight = sc.nextInt();
             
             if(accessRight >= 1 && accessRight <= 4) {

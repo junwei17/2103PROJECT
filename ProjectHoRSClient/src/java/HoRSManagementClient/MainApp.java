@@ -6,6 +6,7 @@
 package HoRSManagementClient;
 
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
@@ -25,20 +26,23 @@ public class MainApp {
     private Employee currentEmployee;
     private SystemAdministrationModule systemAdministrationModule;
     private HotelOperationModule hotelOperationModule;
+    private FrontOfficeModule frontOfficeModule;
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
     private RoomTypeSessionBeanRemote roomTypeSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
+    private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
             
     public MainApp() {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote) {
+    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote) {
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
+        this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
         
     }
     
@@ -65,6 +69,7 @@ public class MainApp {
                         System.out.println("Welcome, " + currentEmployee.getEmployeeUsername() + "!\n");
                         systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote);
                         hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee, roomRateSessionBeanRemote);
+                        frontOfficeModule = new FrontOfficeModule(frontOfficeModuleSessionBeanRemote, currentEmployee);
                         menuMain();
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
@@ -129,10 +134,11 @@ public class MainApp {
             System.out.println("You are login as " + currentEmployee.getEmployeeUsername() + " with " + currentEmployee.getAccessRightEnum().toString() + " rights\n");
             System.out.println("1: System Adminstration");
             System.out.println("2: Hotel Operation");
-            System.out.println("3: Return to main menu to logout\n");
+            System.out.println("3: Front Office");
+            System.out.println("4: Return to main menu to logout\n");
             response = 0;
             
-            while (response < 1 || response > 3) {
+            while (response < 1 || response > 4) {
                 System.out.print(">");
                 response = sc.nextInt();
                 
@@ -148,11 +154,17 @@ public class MainApp {
                     } catch (InvalidAccessRightException ex) {
                         System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
                     }
-                }else if (response == 3) {
+                } else if (response == 3){
+                    try {
+                        frontOfficeModule.menuFrontOffice();
+                    } catch (InvalidAccessRightException ex) {
+                        System.out.println("Invalid option, please try again!: " + ex.getMessage() + "\n");
+                    }    
+                }else if (response == 4) {
                     break;
                 }
             }
-            if(response == 3){
+            if(response == 4){
                 break;
             }
         }

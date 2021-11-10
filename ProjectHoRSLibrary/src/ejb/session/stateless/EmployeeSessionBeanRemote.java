@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Employee;
 import java.util.List;
+import javafx.util.Pair;
 import javax.ejb.Remote;
 import util.exception.InvalidAccessRightException;
 import util.exception.EmployeeUsernameExistException;

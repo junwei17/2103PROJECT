@@ -108,6 +108,12 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
         Query query = em.createQuery("SELECT rr FROM RoomRate rr");
         return query.getResultList();
     }
+    
+    @Override
+    public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException{
+        RoomRate toBeRemoved = viewRoomRateDetails(roomRateId);
+        em.remove(toBeRemoved);
+    }
 
     
 }

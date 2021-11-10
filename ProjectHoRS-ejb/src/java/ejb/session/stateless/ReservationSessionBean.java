@@ -24,6 +24,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     @PersistenceContext(unitName = "ProjectHoRS-ejbPU")
     private EntityManager em;
 
+    @Override
     public String viewReservationDetails(Long reservationId) throws ReservationNotFoundException 
     {
         Reservation reservation = em.find(Reservation.class, reservationId);
@@ -34,11 +35,12 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         String reservationDetails = "Reservation Start Date: " + reservation.getStartDate() + ".\n";
         reservationDetails += "Reservation End Date: " + reservation.getEndDate() + ".\n";
-        reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ". RoomType: " + reservation.getRoomType() + ".\n";
+        reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
         reservationDetails += "Price: " + reservation.getFee() + ".\n";
         return reservationDetails;
     }
     
+    @Override
     public List<Reservation> viewAllReservations(Long guestId) throws GuestNotFoundException, ReservationNotFoundException
     {
         Guest guest = em.find(Guest.class, guestId);

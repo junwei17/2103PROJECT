@@ -7,5 +7,5 @@ public enum AccessRightEnum
      ADMINISTRATOR,
      OPERATION_MANAGER,
      SALES_MANAGER,
-     EMPLOYEE
+     GUEST_RELATION_OFFICER
 }

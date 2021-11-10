@@ -36,6 +36,14 @@ public class RoomRate implements Serializable {
     @ManyToOne
     private RoomType roomType;
 
+    public RoomRate(String name, RateTypeEnum rateType, BigDecimal ratePerNight, RoomType roomType) {
+        this.name = name;
+        this.rateType = rateType;
+        this.ratePerNight = ratePerNight;
+        this.roomType = roomType;
+    }
+    
+
     public RoomRate(String name, RateTypeEnum rateType, BigDecimal ratePerNight, Date validityStartDate, Date validityEndDate) {
         this.name = name;
         this.rateType = rateType;

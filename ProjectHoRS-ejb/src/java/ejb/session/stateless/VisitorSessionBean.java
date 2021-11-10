@@ -48,7 +48,7 @@ public class VisitorSessionBean implements VisitorSessionBeanRemote, VisitorSess
     @Override
     public Guest retrieveGuestByUsername(String username) throws GuestNotFoundException
     {
-        Query query = entityManager.createQuery("SELECT g FROM Guest g WHERE s.username = :inUsername");
+        Query query = entityManager.createQuery("SELECT g FROM Guest g WHERE g.username = :inUsername");
         query.setParameter("inUsername", username);
         
         try
@@ -57,7 +57,7 @@ public class VisitorSessionBean implements VisitorSessionBeanRemote, VisitorSess
         }
         catch(NoResultException | NonUniqueResultException ex)
         {
-            throw new GuestNotFoundException("Staff Username " + username + " does not exist!");
+            throw new GuestNotFoundException("Guest Username " + username + " does not exist!");
         }
     }
     

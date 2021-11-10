@@ -5,7 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.Reservation;
+import java.util.List;
 import javax.ejb.Local;
+import util.exception.GuestNotFoundException;
+import util.exception.ReservationNotFoundException;
 
 /**
  *
@@ -13,5 +17,9 @@ import javax.ejb.Local;
  */
 @Local
 public interface ReservationSessionBeanLocal {
+
+    public List<Reservation> viewAllReservations(Long guestId) throws GuestNotFoundException, ReservationNotFoundException;
+
+    public String viewReservationDetails(Long reservationId) throws ReservationNotFoundException;
     
 }

@@ -9,10 +9,14 @@ import entity.Partner;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerExistException;
+import util.exception.PartnerNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -49,6 +53,43 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     public List<Partner> retrieveAllPartners() {
         Query query = em.createQuery("SELECT p FROM Partner p");
         return query.getResultList();
+    }
+    
+    public Partner retrievePartnerByUsername(String username) throws PartnerNotFoundException
+    {
+        Query query = em.createQuery("SELECT p FROM Partner p WHERE p.username = :inUsername");
+        query.setParameter(":inUsername", username);
+        
+        try
+        {
+            return (Partner)query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException ex)
+        {
+            throw new PartnerNotFoundException("Staff Username " + username + " does not exist!");
+        }
+    }
+    
+    public Partner partnerLogin(String username, String password) throws InvalidLoginCredentialException
+    {
+        try
+        {   
+            Partner partner = retrievePartnerByUsername(username);
+            
+            if(partner.getPassword().equals(password))
+            {
+                partner.getReservations().size();                
+                return partner;
+            }
+            else
+            {
+                throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+            }
+        }
+        catch (PartnerNotFoundException ex)
+        {
+            throw new InvalidLoginCredentialException("Username does not exist or invalid password!");
+        }
+                
     }
 
 }

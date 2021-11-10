@@ -6,8 +6,10 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,14 +37,23 @@ public class RoomType implements Serializable {
     @OneToMany(mappedBy ="roomType")
     private List<Room> rooms;
     
-    @OneToMany(mappedBy ="roomType")
+    @OneToMany(mappedBy ="roomType", fetch = FetchType.EAGER)
     private List<RoomRate> roomRates;
     
-    @OneToMany(mappedBy ="RoomType")
-    private List<Reservation> reservations;
+    //@OneToMany(mappedBy ="RoomType")
+    //private List<Reservation> reservations;
+
+    public RoomType(String name) {
+        this();
+        this.name = name;
+    }
 
     public RoomType() {
+        this.rooms = new ArrayList<>();
+        this.roomRates = new ArrayList<>();
+        
     }
+    
     
 
     public Long getRoomTypeId() {
@@ -170,13 +181,10 @@ public class RoomType implements Serializable {
         return amenitiesEnum;
     }
 
-    /**
-     * @param amenitiesEnum the amenitiesEnum to set
-     */
+   
     public void setAmenitiesEnum(AmenitiesEnum amenitiesEnum) {
         this.amenitiesEnum = amenitiesEnum;
     }
-
     /**
      * @return the roomRates
      */

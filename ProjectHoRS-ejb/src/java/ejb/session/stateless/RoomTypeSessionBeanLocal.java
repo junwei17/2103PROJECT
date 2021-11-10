@@ -24,6 +24,8 @@ public interface RoomTypeSessionBeanLocal {
 
     public Long createRoomType(RoomType roomType) throws RoomExistException, UnknownPersistenceException;
 
+    public RoomType retreieveRoomTypeByName(String name) throws RoomTypeNotFoundException;
+    
     public RoomType viewRoomTypeDetails(Long roomName) throws RoomTypeNotFoundException;
 
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException, UpdateRoomTypeException;
