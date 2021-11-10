@@ -37,6 +37,9 @@ public class RoomType implements Serializable {
     
     @OneToMany(mappedBy ="roomType")
     private List<RoomRate> roomRates;
+    
+    @OneToMany(mappedBy ="RoomType")
+    private List<Reservation> reservations;
 
     public RoomType() {
     }

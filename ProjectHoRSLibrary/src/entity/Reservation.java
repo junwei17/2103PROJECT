@@ -9,11 +9,19 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -26,13 +34,31 @@ public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ReservationId;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    @NotNull
     private Date startDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    @NotNull
     private Date endDate;
+    @Column(nullable = false, precision = 11, scale = 2)
+    @DecimalMin("0.00")
+    @Digits(integer = 9, fraction = 2)
     private BigDecimal fee;
+    @Column(nullable = false)
+    @NotNull
+    private Integer numberOfRooms;
+    
     
     /*@OneToMany(mappedBy = "Reservation")
     private List<Room> rooms;*/
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private RoomType roomType;
 
+    
     public Reservation() {
     }
 
@@ -116,11 +142,40 @@ public class Reservation implements Serializable {
         return fee;
     }
 
+   
     /**
      * @param fee the fee to set
      */
     public void setFee(BigDecimal fee) {
         this.fee = fee;
+    }
+
+    /**
+     * @return the numberOfRooms
+     */
+    public Integer getNumberOfRooms() {
+        return numberOfRooms;
+    }
+
+    /**
+     * @param numberOfRooms the numberOfRooms to set
+     */
+    public void setNumberOfRooms(Integer numberOfRooms) {
+        this.numberOfRooms = numberOfRooms;
+    }
+
+    /**
+     * @return the roomType
+     */
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    /**
+     * @param roomType the roomType to set
+     */
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
     }
 
     /**

@@ -6,8 +6,10 @@
 package entity;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +17,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -27,7 +33,13 @@ public class Room implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
+    @Column(nullable = false, length = 4)
+    @NotNull
+    @Size(min = 4, max = 4)
     private Integer roomNo;
+    private Integer sequenceNo;
+    @Column(nullable = false)
+    @NotNull
     private boolean status;
     
     /*@ManyToOne(optional = false)

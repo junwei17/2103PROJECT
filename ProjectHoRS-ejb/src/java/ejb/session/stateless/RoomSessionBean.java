@@ -5,8 +5,13 @@
  */
 package ejb.session.stateless;
 
+import entity.Reservation;
 import entity.Room;
+import entity.RoomType;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -27,8 +32,13 @@ import util.exception.UpdateRoomException;
 @Stateless
 public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLocal {
 
+    @EJB
+    private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal;
+
     @PersistenceContext(unitName = "ProjectHoRS-ejbPU")
     private EntityManager em;
+    
+    
     
 
     public RoomSessionBean() {
@@ -103,5 +113,50 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
         Query query = em.createQuery("SELECT r FROM Room r");
         return query.getResultList();
     }
-   
+    
+    public List<RoomType> searchRooms(Date startDate, Date endDate, Long noRooms, RoomType roomType) 
+    {
+        
+        Query query = em.createQuery("SELECT r FROM Reservation r WHERE r.startDate < endDate AND r.endDate > startDate");
+        List<Reservation> reservations = query.getResultList();
+        
+        List<RoomType> roomTypes = roomTypeSessionBeanLocal.viewAllRoomTypes();
+        
+        List<RoomType> roomTypesToDisplay = new ArrayList<>();
+        
+        for(RoomType rt : roomTypes)
+        {
+            Long count = new Long(0);
+            Long numberOfRooms = numberOfRoomsByRoomType(rt);
+            
+            for (Reservation reservation : reservations)
+            {
+                if (reservation.getRoomType()== rt)
+                {
+                    count += reservation.getNumberOfRooms();
+                }
+            }
+            
+            if (count + noRooms <= numberOfRooms)
+            {
+                roomTypesToDisplay.add(rt);
+            }
+            
+        }
+        
+        
+        
+        
+        return null;
+    }
+    
+    private Long numberOfRoomsByRoomType(RoomType roomType)
+    {
+        Query query = em.createQuery("SELECT Count(r) FROM Room r IN r.roomType rt WHERE rt.name = :inroomTypeId");
+        query.setParameter(":inRoomTypeId", roomType.getName());
+        Long result = (Long)query.getSingleResult();
+        
+        return result;
+    }
+ 
 }
