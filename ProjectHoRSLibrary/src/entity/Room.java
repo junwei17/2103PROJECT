@@ -33,7 +33,13 @@ public class Room implements Serializable {
     /*@ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private List<Reservation> reservations;*/
+    @ManyToOne
+    private Reservation reservation;
 
+    @OneToOne
+    @JoinColumn(nullable = true)
+    private ReservationRoom reservationRoom;
+     
     //@OneToOne
     public Room(Integer roomNo, boolean status, RoomType roomType) {
         this();
@@ -128,6 +134,20 @@ public class Room implements Serializable {
      */
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
+    }
+
+    /**
+     * @return the reservation
+     */
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    /**
+     * @param reservation the reservation to set
+     */
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
     
 }

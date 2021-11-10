@@ -6,7 +6,10 @@
 package ejb.session.stateless;
 
 import entity.Employee;
+import entity.RoomType;
+import java.util.Date;
 import java.util.List;
+import javafx.util.Pair;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -117,4 +120,14 @@ public class EmployeeSessionBean implements EmployeeSessionBeanRemote, EmployeeS
         Query query = entityManager.createQuery("SELECT e FROM Employee e");
         return query.getResultList();
     }
+    
 }
+
+/*class Storage {
+    RoomType roomType;
+    int count;
+    
+    public String toString() {
+        return this.roomType.getRoomTypeId() + " " + this.count;
+    }
+}*/

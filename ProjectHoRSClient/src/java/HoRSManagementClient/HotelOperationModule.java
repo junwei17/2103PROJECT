@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import javafx.util.Pair;
+import javax.persistence.Query;
 import util.enumeration.AccessRightEnum;
 import util.enumeration.AmenitiesEnum;
 import util.enumeration.RateTypeEnum;
@@ -684,5 +686,8 @@ public class HotelOperationModule {
     
     public void viewAllRoomRates() {
         System.out.println("cant do this shit");
+        
     }
+    
+    
 }

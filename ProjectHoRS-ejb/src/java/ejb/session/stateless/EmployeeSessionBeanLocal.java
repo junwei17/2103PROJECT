@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.Employee;
 import java.util.List;
+import javafx.util.Pair;
 import javax.ejb.Local;
 import util.exception.InvalidAccessRightException;
 import util.exception.EmployeeUsernameExistException;
@@ -26,5 +27,6 @@ public interface EmployeeSessionBeanLocal {
     //public String test();
 
     public List<Employee> retrieveAllEmployees();
+    
     
 }
