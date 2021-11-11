@@ -97,7 +97,7 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
     
     @Override
     public List<Object[]> reservationsToFulfill(Date startDate) {
-        Query query = em.createQuery("SELECT r.startDate, r.endDate, rr FROM ReservationRoom rr JOIN Reservation r WHERE r.startDate = :inStartDate AND rr.reservation = r");
+        Query query = em.createQuery("SELECT r.startDate, r.endDate, rr FROM ReservationRoom rr JOIN Reservation r WHERE r.startDate = :inStartDate AND rr.reservation = r AND rr.room = null");
         query.setParameter("inStartDate", startDate);
         return query.getResultList();
     }
@@ -108,5 +108,11 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
         Room room = em.find(Room.class, roomId);
         reservationRoom.setRoom(room);
         em.persist(reservationRoom);
+    }
+    
+    @Override
+    public List<Exceptions> retrieveAllEmployees() {
+        Query query = entityManager.createQuery("SELECT e FROM Employee e");
+        return query.getResultList();
     }
 }

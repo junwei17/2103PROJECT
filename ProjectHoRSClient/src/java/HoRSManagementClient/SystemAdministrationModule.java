@@ -203,7 +203,8 @@ public class SystemAdministrationModule {
                     System.out.println("result there is " + result);
                     if(result.size() == 0){
                         try {
-                            exceptionReportRemote.createExceptions(new Exceptions((Long)((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[1]));
+                            Exceptions newExceptions = new Exceptions(((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[1]);
+                            exceptionReportRemote.createExceptions(newExceptions);
                         } catch (ExceptionExistException | UnknownPersistenceException ex) {
                             System.out.println("Unable to make Exception in Exception Report!");
                         }
@@ -211,7 +212,8 @@ public class SystemAdministrationModule {
                         System.out.println(roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId() + " here");
                         adminSessionBeanRemote.setRoom(((ReservationRoom)obj[2]).getReservationRoomId(), roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId());
                         try {
-                            exceptionReportRemote.createExceptions(new Exceptions((Long)((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[0]));
+                            Exceptions newExceptions = new Exceptions(((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[0]);
+                            exceptionReportRemote.createExceptions(newExceptions);
                         } catch (ExceptionExistException | UnknownPersistenceException ex) {
                             System.out.println("Unable to make Exception in Exception Report!");
                         }

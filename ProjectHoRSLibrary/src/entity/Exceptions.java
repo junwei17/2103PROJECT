@@ -29,6 +29,10 @@ public class Exceptions implements Serializable {
     private Long reservationRoomId;
     private Long reservationRoomTypeId;
 
+    public Exceptions() {
+    }
+    
+
     public Exceptions( Long reservationId, Long reservationRoomId, Long reservationRoomTypeId, ExceptionTypeEnum exceptionTypeEnum) {
         this.exceptionTypeEnum = exceptionTypeEnum;
         this.reservationId = reservationId;

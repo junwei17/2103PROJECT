@@ -5,10 +5,12 @@
  */
 package HoRSManagementClient;
 
+import ejb.session.stateless.ExceptionReportRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
 import entity.Employee;
+import entity.Exceptions;
 import entity.Room;
 import entity.RoomRate;
 import entity.RoomType;
@@ -47,15 +49,17 @@ public class HotelOperationModule {
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private Employee currentEmployee;
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
+    private ExceptionReportRemote exceptionReportRemote;
     
     public HotelOperationModule() {
     }
 
-    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, Employee currentEmployee, RoomRateSessionBeanRemote roomRateSessionBeanRemote) {
+    public HotelOperationModule(RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, Employee currentEmployee, RoomRateSessionBeanRemote roomRateSessionBeanRemote, ExceptionReportRemote exceptionReportRemote) {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.currentEmployee = currentEmployee;
+        this.exceptionReportRemote = exceptionReportRemote;
     }
     
     public void menuHotelOperation() throws InvalidAccessRightException {
@@ -443,6 +447,11 @@ public class HotelOperationModule {
     public void viewReport() {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: View Room Allocation Exception Report ***\n");
+        List<Exceptions> exceptions = exceptionReportRemote.viewAllExceptions();
+        System.out.printf("%8s%15s%20s%20s\n", "Room ID", "Room Type", "Room Number", "Room Status");
+        for(Room room : rooms) {
+            System.out.printf("%8s%20s%20s%20s\n", room.getRoomId(), room.getRoomType().getRoomTypeId(), room.getRoomNo(), room.getStatus());
+        }
         
     }
     
