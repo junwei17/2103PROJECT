@@ -38,7 +38,7 @@ public class Visitor implements Serializable {
     private String lastName;
     @Column(nullable = false, unique = true, length = 64)
     @NotNull
-    @Size(min = 6, max = 64)
+    @Size(min = 3, max = 64)
     private String email;
     @Column(nullable = false, length = 64)
     @NotNull

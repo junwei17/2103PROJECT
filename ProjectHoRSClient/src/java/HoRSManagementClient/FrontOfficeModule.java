@@ -8,6 +8,7 @@ package HoRSManagementClient;
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
 import entity.Employee;
 import entity.Reservation;
+import entity.ReservationRoom;
 import entity.RoomType;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -19,6 +20,7 @@ import java.util.Scanner;
 import util.enumeration.AccessRightEnum;
 import util.exception.InvalidAccessRightException;
 import util.exception.ReservationExistException;
+import util.exception.ReservationRoomExistException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -151,12 +153,17 @@ public class FrontOfficeModule {
             newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
             try {
                 frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
-            } catch(ReservationExistException | UnknownPersistenceException ex) {
+                for (int i = 0; i < number; i++)
+                {
+                    ReservationRoom reservationRoom = new ReservationRoom();
+                    reservationRoom.setRoomType((RoomType)list.get(option - 1)[0]);
+                    frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , newReservation.getReservationId());
+                    
+                }
+            } catch(ReservationExistException | UnknownPersistenceException | ReservationRoomExistException ex) {
                 System.out.println("Reservation already exists!");
             }
         }
-        
-        
     }
     
     public List<Object[]> doSearchRoom(Date dateStart, Date dateEnd) {

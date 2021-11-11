@@ -34,12 +34,9 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
     @Column(nullable = false, length = 4)
-    @NotNull
-    @Size(min = 4, max = 4)
     private Integer roomNo;
     private Integer sequenceNo;
     @Column(nullable = false)
-    @NotNull
     private boolean status;
     
     /*@ManyToOne(optional = false)
@@ -160,6 +157,20 @@ public class Room implements Serializable {
      */
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
+    }
+
+    /**
+     * @return the reservationRoom
+     */
+    public ReservationRoom getReservationRoom() {
+        return reservationRoom;
+    }
+
+    /**
+     * @param reservationRoom the reservationRoom to set
+     */
+    public void setReservationRoom(ReservationRoom reservationRoom) {
+        this.reservationRoom = reservationRoom;
     }
     
 }

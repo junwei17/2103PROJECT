@@ -24,5 +24,5 @@ public interface FrontOfficeModuleSessionBeanRemote {
     
     public Long createReservation(Reservation newReservation) throws ReservationExistException, UnknownPersistenceException;
 
-    public Long reserveRoom(ReservationRoom newReservationRoom) throws ReservationRoomExistException, UnknownPersistenceException;
+    public Long reserveRoom(ReservationRoom newReservationRoom, Long reservationId) throws ReservationRoomExistException, UnknownPersistenceException;
 }

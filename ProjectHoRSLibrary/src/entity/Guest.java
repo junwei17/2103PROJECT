@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,10 +41,13 @@ public class Guest extends Visitor implements Serializable {
     private List<Reservation> reservations;
 
     public Guest() {
+        super();
+        this.reservations = new ArrayList<>();
     }
 
     public Guest(String firstName, String lastName, String email, String address, String username, String password) {
         super(firstName, lastName, email, address);
+        this.reservations = new ArrayList<>();
         this.username = username;
         this.password = password;
     }

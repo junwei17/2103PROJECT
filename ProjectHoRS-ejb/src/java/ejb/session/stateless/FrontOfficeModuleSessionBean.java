@@ -68,9 +68,13 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
       
         
     @Override
-    public Long reserveRoom(ReservationRoom newReservationRoom) throws ReservationRoomExistException, UnknownPersistenceException{
+    public Long reserveRoom(ReservationRoom newReservationRoom , Long reservationId) throws ReservationRoomExistException, UnknownPersistenceException{
          try {
+            Reservation reservation = em.find(Reservation.class, reservationId);
+            newReservationRoom.setReservation(reservation);
             em.persist(newReservationRoom);
+            em.flush();
+            reservation.getReservationRooms().add(newReservationRoom);
             em.flush();
         
             return newReservationRoom.getReservationRoomId();
@@ -93,6 +97,8 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
         
         }
     }
+    
+    
     /*@Override
     public List*/
 

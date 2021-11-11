@@ -29,8 +29,14 @@ public class ReservationRoom implements Serializable {
     private Long reservationRoomId;
 
     @OneToOne
-    @JoinColumn(nullable = false)
+    private RoomType roomType;
+    
+    @OneToOne
+    @JoinColumn(nullable = true)
     private Room room;
+
+    public ReservationRoom() {
+    }
     
     @ManyToOne
     private Reservation reservation;
@@ -94,6 +100,20 @@ public class ReservationRoom implements Serializable {
      */
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    /**
+     * @return the roomType
+     */
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    /**
+     * @param roomType the roomType to set
+     */
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
     }
     
 }

@@ -9,7 +9,9 @@ import ejb.session.stateless.EmployeeSessionBeanLocal;
 import ejb.session.stateless.RoomRateSessionBeanLocal;
 import ejb.session.stateless.RoomSessionBeanLocal;
 import ejb.session.stateless.RoomTypeSessionBeanLocal;
+import ejb.session.stateless.VisitorSessionBeanLocal;
 import entity.Employee;
+import entity.Guest;
 import entity.Room;
 import entity.RoomRate;
 import entity.RoomType;
@@ -24,6 +26,8 @@ import javax.persistence.PersistenceContext;
 import util.enumeration.AccessRightEnum;
 import util.enumeration.RateTypeEnum;
 import util.exception.EmployeeUsernameExistException;
+import util.exception.GuestExistException;
+import util.exception.InputDataValidationException;
 import util.exception.InvalidAccessRightException;
 import util.exception.RoomExistException;
 import util.exception.RoomRateExistException;
@@ -40,6 +44,9 @@ import util.exception.UnknownPersistenceException;
 public class DataInitializationSessionBean {
 
     @EJB
+    private VisitorSessionBeanLocal visitorSessionBeanLocal;
+
+    @EJB
     private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal;
 
     @EJB
@@ -50,6 +57,8 @@ public class DataInitializationSessionBean {
 
     @EJB
     private RoomSessionBeanLocal roomSessionBeanLocal;
+    
+    
     
 
     @PersistenceContext(unitName = "ProjectHoRS-ejbPU")
@@ -70,7 +79,7 @@ public class DataInitializationSessionBean {
         }
     }
     
-    private void initializeData()
+    private void initializeData() 
     {
         try
         {
@@ -79,13 +88,13 @@ public class DataInitializationSessionBean {
             employeeSessionBeanLocal.createNewEmployee(new Employee("salesmanager", "password", AccessRightEnum.SALES_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("guestrelo", "password", AccessRightEnum.GUEST_RELATION_OFFICER));
             
-            /*roomTypeSessionBeanLocal.createRoomType(new RoomType("Deluxe Room"));
+            roomTypeSessionBeanLocal.createRoomType(new RoomType("Deluxe Room"));
             roomTypeSessionBeanLocal.createRoomType(new RoomType("Premier Room"));
             roomTypeSessionBeanLocal.createRoomType(new RoomType("Family Room"));
             roomTypeSessionBeanLocal.createRoomType(new RoomType("Junior Suite"));
             roomTypeSessionBeanLocal.createRoomType(new RoomType("Grand Suite"));
-            */
-            /*
+           
+            
             RoomType roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Deluxe Room");
             roomSessionBeanLocal.createRoom(new Room(0101, true, roomType));
             roomSessionBeanLocal.createRoom(new Room(0201, true, roomType));
@@ -120,12 +129,12 @@ public class DataInitializationSessionBean {
             roomSessionBeanLocal.createRoom(new Room(0305, true, roomType));
             roomSessionBeanLocal.createRoom(new Room(0405, true, roomType));
             roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("500"), roomType));
-            roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Grand");
             roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Room Normal", RateTypeEnum.NORMAL, new BigDecimal("250"), roomType));
-            */
-                        
             
-        } catch (EmployeeUsernameExistException | UnknownPersistenceException   ex)
+                        
+            visitorSessionBeanLocal.registerAsGuest(new Guest("alice", "bob", "alice@gmail.com", "15AppleRoad", "username", "password"));
+            
+        } catch (EmployeeUsernameExistException | UnknownPersistenceException | InputDataValidationException | RoomExistException | RoomRateExistException  | RoomTypeNotFoundException | GuestExistException ex)
         {
             ex.printStackTrace();
         }

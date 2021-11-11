@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -61,9 +62,11 @@ public class Reservation implements Serializable {
     private Partner partner;
     
     public Reservation() {
+        this.reservationRooms = new ArrayList<>();
     }
 
     public Reservation(Date startDate, Date endDate, BigDecimal fee) {
+        this();
         this.startDate = startDate;
         this.endDate = endDate;
         this.fee = fee;
