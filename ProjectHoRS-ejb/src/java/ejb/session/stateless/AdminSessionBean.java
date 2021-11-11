@@ -7,6 +7,8 @@ package ejb.session.stateless;
 
 import entity.Reservation;
 import entity.ReservationRoom;
+import entity.Room;
+import entity.RoomType;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +16,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.RoomNotFoundException;
 
 /**
  *
@@ -21,13 +24,43 @@ import javax.persistence.Query;
  */
 @Stateless
 public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBeanLocal {
+    private RoomSessionBeanLocal roomSessionBeanLocal;
 
     @PersistenceContext(unitName = "ProjectHoRS-ejbPU")
     private EntityManager em;
 
-    public void allocateRoom()
+    @Override
+    public void allocateRoom(Date startDate)
     {
-        Date current = new Date();
+        List<Object[]> fufillList = reservationsToFulfill(startDate);
+        if(!fufillList.isEmpty()) {
+            for(Object[] obj : fufillList){
+                System.out.println("obj is " + (Date)obj[0] + (Date)obj[1] + ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId());
+                Long result = searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId());
+                System.out.println("result here is " + result);
+                try {
+                if(result == -1) {
+                    //create new Exception
+                    result = searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId() + 1);
+                    System.out.println("result there is " + result);
+                    if(result == -1){
+                        //create new Exception
+                    } else {
+                        System.out.println(roomSessionBeanLocal.viewRoomDetails(result).getRoomId() + " here");
+                        ((ReservationRoom)obj[2]).setRoom(roomSessionBeanLocal.viewRoomDetails(result));
+                    }
+                } else {
+                    System.out.println("herereee");
+                    System.out.println(roomSessionBeanLocal.viewRoomDetails(result).getRoomId() + " there");
+                    ((ReservationRoom)obj[2]).setRoom(roomSessionBeanLocal.viewRoomDetails(result));
+                }
+                } catch (RoomNotFoundException ex) {
+                    System.out.println("Room not Found!");
+                }
+            }
+        }
+        
+        /*Date current = new Date();
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Query query = em.createQuery("SELECT r FROM Reservation r");
         List<Reservation> reservations = query.getResultList();
@@ -50,10 +83,32 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
             {
                 
             }
-        }
+        }*/
     }
 
+    @Override
+    public Long searchRooms(Date startDate, Date endDate, Long roomTypeId) {
+        Query query = em.createQuery("SELECT r.roomId FROM Room r WHERE r.roomId NOT IN (SELECT rr.room.roomId FROM ReservationRoom rr WHERE rr.reservation.startDate <= :inEndDate AND rr.reservation.endDate >= :inStartDate) AND r.roomType.roomTypeId = :inRoomTypeId ORDER BY r.roomId ASC");
+        query.setParameter("inEndDate", endDate);
+        query.setParameter("inStartDate", startDate);
+        query.setParameter("inRoomTypeId", roomTypeId);
+        if(query.getResultList().isEmpty()){
+            return new Long(-1);
+        } else {
+            return (Long)query.getResultList().get(0);
+        }
+    }
     
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    @Override
+    public List<Object[]> reservationsToFulfill(Date startDate) {
+        Query query = em.createQuery("SELECT r.startDate, r.endDate, rr FROM ReservationRoom rr JOIN Reservation r WHERE r.startDate = :inStartDate AND rr.reservation = r");
+        query.setParameter("inStartDate", startDate);
+        return query.getResultList();
+    }
+    
+    @Override
+    public void setRoom(ReservationRoom reservationRoom, Room room) {
+        reservationRoom.setRoom(room);
+        em.flush();
+    }
 }

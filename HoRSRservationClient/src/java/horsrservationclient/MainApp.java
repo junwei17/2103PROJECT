@@ -215,7 +215,7 @@ public class MainApp {
                         {
                             String reservationDetails = "Reservation Start Date: " + reservation.getStartDate() + ".\n";
                             reservationDetails += "Reservation End Date: " + reservation.getEndDate() + ".\n";
-                            reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
+                            //reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
                             reservationDetails += "Price: " + reservation.getFee() + ".\n";
                             System.out.println(reservationDetails);
                         }
@@ -317,8 +317,10 @@ public class MainApp {
             newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
             try {
                 frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
-            } catch(ReservationExistException | UnknownPersistenceException ex) {
+            } catch(ReservationExistException ex) {
                 System.out.println("Reservation already exists!");
+            } catch (UnknownPersistenceException ex) {
+                System.out.println("Unknown Error!");
             }
         }
         

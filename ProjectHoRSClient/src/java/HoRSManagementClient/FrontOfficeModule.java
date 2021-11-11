@@ -152,16 +152,19 @@ public class FrontOfficeModule {
             newReservation.setEndDate(dateEnd);
             newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
             try {
-                frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
+                Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
+                System.out.println("Can Create room!");
                 for (int i = 0; i < number; i++)
                 {
                     ReservationRoom reservationRoom = new ReservationRoom();
                     reservationRoom.setRoomType((RoomType)list.get(option - 1)[0]);
-                    frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , newReservation.getReservationId());
+                    frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , reservationId);
                     
                 }
-            } catch(ReservationExistException | UnknownPersistenceException | ReservationRoomExistException ex) {
+            } catch(ReservationExistException | ReservationRoomExistException ex) {
                 System.out.println("Reservation already exists!");
+            } catch (UnknownPersistenceException ex) {
+                System.out.println("Unknown error!");
             }
         }
     }

@@ -35,19 +35,13 @@ public class Room implements Serializable {
     private Long roomId;
     @Column(nullable = false, length = 4)
     private Integer roomNo;
-    private Integer sequenceNo;
+    //private Integer sequenceNo;
     @Column(nullable = false)
     private boolean status;
     
     /*@ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private List<Reservation> reservations;*/
-    @ManyToOne
-    private Reservation reservation;
-
-    @OneToOne
-    @JoinColumn(nullable = true)
-    private ReservationRoom reservationRoom;
      
     //@OneToOne
     public Room(Integer roomNo, boolean status, RoomType roomType) {
@@ -145,32 +139,6 @@ public class Room implements Serializable {
         this.roomType = roomType;
     }
 
-    /**
-     * @return the reservation
-     */
-    public Reservation getReservation() {
-        return reservation;
-    }
 
-    /**
-     * @param reservation the reservation to set
-     */
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
-    }
-
-    /**
-     * @return the reservationRoom
-     */
-    public ReservationRoom getReservationRoom() {
-        return reservationRoom;
-    }
-
-    /**
-     * @param reservationRoom the reservationRoom to set
-     */
-    public void setReservationRoom(ReservationRoom reservationRoom) {
-        this.reservationRoom = reservationRoom;
-    }
     
 }

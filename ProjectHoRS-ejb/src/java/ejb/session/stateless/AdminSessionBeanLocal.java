@@ -5,6 +5,8 @@
  */
 package ejb.session.stateless;
 
+import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -13,5 +15,11 @@ import javax.ejb.Local;
  */
 @Local
 public interface AdminSessionBeanLocal {
+
+    public void allocateRoom(Date startDate);
+
+    public Long searchRooms(Date startDate, Date endDate, Long roomTypeId);
+
+    public List<Object[]> reservationsToFulfill(Date startDate);
     
 }

@@ -35,7 +35,7 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         
         String reservationDetails = "Reservation Start Date: " + reservation.getStartDate() + ".\n";
         reservationDetails += "Reservation End Date: " + reservation.getEndDate() + ".\n";
-        reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
+        //reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
         reservationDetails += "Price: " + reservation.getFee() + ".\n";
         return reservationDetails;
     }

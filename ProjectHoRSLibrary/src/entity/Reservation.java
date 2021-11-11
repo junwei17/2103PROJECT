@@ -35,21 +35,21 @@ public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ReservationId;
-    @Temporal(TemporalType.TIMESTAMP)
+    /*@Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    @NotNull
+    @NotNull*/
     private Date startDate;
-    @Temporal(TemporalType.TIMESTAMP)
+    /*@Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    @NotNull
+    @NotNull*/
     private Date endDate;
-    @Column(nullable = false, precision = 11, scale = 2)
+    /*@Column(nullable = false, precision = 11, scale = 2)
     @DecimalMin("0.00")
-    @Digits(integer = 9, fraction = 2)
+    @Digits(integer = 9, fraction = 2)*/
     private BigDecimal fee;
-    @Column(nullable = false)
-    @NotNull
-    private Integer numberOfRooms;
+    /*@Column(nullable = false)
+    @NotNull*/
+    //private Integer numberOfRooms;
     
     
     @OneToMany(mappedBy = "reservation")
@@ -164,20 +164,6 @@ public class Reservation implements Serializable {
      */
     public void setReservationRooms(List<ReservationRoom> reservationRooms) {
         this.reservationRooms = reservationRooms;
-    }
-
-    /**
-     * @return the numberOfRooms
-     */
-    public Integer getNumberOfRooms() {
-        return numberOfRooms;
-    }
-
-    /**
-     * @param numberOfRooms the numberOfRooms to set
-     */
-    public void setNumberOfRooms(Integer numberOfRooms) {
-        this.numberOfRooms = numberOfRooms;
     }
 
     /**

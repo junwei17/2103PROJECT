@@ -27,11 +27,8 @@ public class ReservationRoom implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reservationRoomId;
-
-    @OneToOne
     private RoomType roomType;
     
-    @OneToOne
     @JoinColumn(nullable = true)
     private Room room;
 

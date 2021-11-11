@@ -5,6 +5,7 @@
  */
 package HoRSManagementClient;
 
+import ejb.session.stateless.AdminSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
@@ -32,11 +33,13 @@ public class MainApp {
     private RoomSessionBeanRemote roomSessionBeanRemote;
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
+    private AdminSessionBeanRemote adminSessionBeanRemote;
             
     public MainApp() {
     }
     
-    public MainApp(EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote) {
+    public MainApp(AdminSessionBeanRemote adminSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote) {
+        this.adminSessionBeanRemote = adminSessionBeanRemote;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
@@ -67,7 +70,7 @@ public class MainApp {
                         doLogin();
                         System.out.println("Login successful!\n");
                         System.out.println("Welcome, " + currentEmployee.getEmployeeUsername() + "!\n");
-                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote);
+                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote, adminSessionBeanRemote, roomSessionBeanRemote);
                         hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee, roomRateSessionBeanRemote);
                         frontOfficeModule = new FrontOfficeModule(frontOfficeModuleSessionBeanRemote, currentEmployee);
                         menuMain();

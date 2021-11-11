@@ -72,9 +72,8 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
          try {
             Reservation reservation = em.find(Reservation.class, reservationId);
             newReservationRoom.setReservation(reservation);
-            em.persist(newReservationRoom);
-            em.flush();
             reservation.getReservationRooms().add(newReservationRoom);
+            em.persist(newReservationRoom);
             em.flush();
         
             return newReservationRoom.getReservationRoomId();
