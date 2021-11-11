@@ -46,8 +46,11 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
     }
     
     @Override
-    public Long createRoom(Room newRoom) throws RoomExistException, UnknownPersistenceException {
+    public Long createRoom(Room newRoom, Long roomTypeId) throws RoomExistException, UnknownPersistenceException {
         try {
+            RoomType roomType = em.find(RoomType.class, "roomTypeId");
+            newRoom.setRoomType(roomType);
+            roomType.getRooms().add(newRoom);
             em.persist(newRoom);
             em.flush();
         

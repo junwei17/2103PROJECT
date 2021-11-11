@@ -20,7 +20,7 @@ import util.exception.UpdateRoomRateException;
 @Local
 public interface RoomRateSessionBeanLocal {
 
-    public Long createRoomRate(RoomRate newRoomRate) throws RoomRateExistException, UnknownPersistenceException;
+    public Long createRoomRate(RoomRate newRoomRate, Long roomTypeId) throws RoomRateExistException, UnknownPersistenceException;
 
     public RoomRate viewRoomRateDetails(Long roomRateId) throws RoomRateNotFoundException;
 
@@ -29,5 +29,7 @@ public interface RoomRateSessionBeanLocal {
     public List<RoomRate> viewAllRoomRates();
 
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException;
+
+    
     
 }

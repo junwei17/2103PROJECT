@@ -321,10 +321,9 @@ public class HotelOperationModule {
             }
         }
         System.out.println("Enter Room Type ID> ");
+        Long roomTypeId = sc.nextLong();
         try { 
-            Long roomTypeId = sc.nextLong();
             RoomType roomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(roomTypeId);
-            newRoom.setRoomType(roomType);
         } catch (RoomTypeNotFoundException ex) {
             System.out.println("An error has occured while retrieving the Room Type: " + ex.getMessage() + "\n");
         }
@@ -332,7 +331,7 @@ public class HotelOperationModule {
         newRoom.setRoomNo(sc.nextInt());
         System.out.println("the room now is " + newRoom.getRoomId() + " " + newRoom.getRoomNo() + " " + newRoom.getStatus());
         try {
-            Long newRoomId = roomSessionBeanRemote.createRoom(newRoom);
+            Long newRoomId = roomSessionBeanRemote.createRoom(newRoom,roomTypeId);
             System.out.println("New room " + newRoomId + " is created!");
         } catch(UnknownPersistenceException ex) {
             System.out.println("An unknown error has occured while creating the room type!: " + ex.getMessage() + "\n");
@@ -553,14 +552,15 @@ public class HotelOperationModule {
         System.out.println("Enter New Room Rate Per Night> ");
         newRoomRate.setRatePerNight(sc.nextBigDecimal());
         System.out.println("Enter New Room Rate Room Type> ");
+        Long roomTypeId =sc.nextLong();
         try {
-            RoomType roomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(sc.nextLong());
+            RoomType roomType = roomTypeSessionBeanRemote.viewRoomTypeDetails(roomTypeId);
             newRoomRate.setRoomType(roomType);
         } catch (RoomTypeNotFoundException ex) {
             System.out.println("Room Type Not Found!");
         }
         try {
-            Long newRoomRateId = roomRateSessionBeanRemote.createRoomRate(newRoomRate);
+            Long newRoomRateId = roomRateSessionBeanRemote.createRoomRate(newRoomRate, roomTypeId);
             System.out.println("New Room Rate " + newRoomRateId + " is created!");
         } catch(UnknownPersistenceException ex) {
             System.out.println("An unknown error has occured while creating the room Rate!: " + ex.getMessage() + "\n");
@@ -581,7 +581,7 @@ public class HotelOperationModule {
             RoomRate roomRate = roomRateSessionBeanRemote.viewRoomRateDetails(roomRateId);
             System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
             System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), roomRate.getValidityStartDate().toString(), roomRate.getValidityEndDate().toString(), roomRate.isDisabled());
-            System.out.println("---------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------");
             System.out.println("> ");
             response = sc.nextInt();
         } catch (RoomRateNotFoundException ex) {

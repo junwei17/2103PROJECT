@@ -48,10 +48,10 @@ public class FrontOfficeModule {
         
         while(true) {
             System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office ***\n");
-            System.out.println("1: Search Room");
-            System.out.println("2: Reserve Room");
-            System.out.println("3: Create New Partner");
-            System.out.println("4: View All Partners");
+            System.out.println("1: Walk-in Search Room");
+            System.out.println("2: Walk-in Reserve Room");
+            System.out.println("3: Check-in Guest");
+            System.out.println("4: Check-out Guest");
             System.out.println("5: Exit to previous menu");
             response = 0;
             
@@ -64,7 +64,7 @@ public class FrontOfficeModule {
                 } else if (response == 2) {
                    doReserveRoom();
                 } else if (response == 3){
-              
+                    doCheckInGuest();
                 } else if (response == 4) {
                
                 }
@@ -179,5 +179,13 @@ public class FrontOfficeModule {
         }
         System.out.println("end here");
         return list;
+    }
+    
+    public void doCheckInGuest() {
+        
+    }
+    
+    public void doCheckOutGuest() {
+        
     }
 }

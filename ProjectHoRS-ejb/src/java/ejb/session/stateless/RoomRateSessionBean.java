@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.RoomRate;
+import entity.RoomType;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,8 +36,11 @@ public class RoomRateSessionBean implements RoomRateSessionBeanRemote, RoomRateS
     }
     
     @Override
-    public Long createRoomRate(RoomRate newRoomRate) throws RoomRateExistException, UnknownPersistenceException {
+    public Long createRoomRate(RoomRate newRoomRate, Long roomTypeId) throws RoomRateExistException, UnknownPersistenceException {
         try {
+            RoomType roomType = em.find(RoomType.class, roomTypeId);
+            newRoomRate.setRoomType(roomType);
+            roomType.getRoomRates().add(newRoomRate);
             em.persist(newRoomRate);
             em.flush();
         

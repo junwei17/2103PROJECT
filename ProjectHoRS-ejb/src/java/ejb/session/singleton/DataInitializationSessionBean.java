@@ -81,7 +81,7 @@ public class DataInitializationSessionBean {
     
     private void initializeData() 
     {
-        try
+        /*try
         {
             employeeSessionBeanLocal.createNewEmployee(new Employee("sysadmin", "password", AccessRightEnum.ADMINISTRATOR));
             employeeSessionBeanLocal.createNewEmployee(new Employee("opmanager", "password", AccessRightEnum.OPERATION_MANAGER));
@@ -139,7 +139,7 @@ public class DataInitializationSessionBean {
             ex.printStackTrace();
         }
         
-        
+     */   
     }
 
     // Add business logic below. (Right-click in editor and choose

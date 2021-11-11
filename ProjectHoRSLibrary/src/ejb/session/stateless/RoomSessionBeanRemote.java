@@ -20,7 +20,7 @@ import util.exception.UpdateRoomException;
  */
 @Remote
 public interface RoomSessionBeanRemote {
-    public Long createRoom(Room newRoom) throws RoomExistException, UnknownPersistenceException;
+    public Long createRoom(Room newRoom, Long roomTypeId) throws RoomExistException, UnknownPersistenceException;
             
     public List<Room> viewAllRooms();
 

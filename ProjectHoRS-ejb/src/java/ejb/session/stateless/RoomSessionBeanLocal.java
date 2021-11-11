@@ -20,7 +20,7 @@ import util.exception.UpdateRoomException;
  */
 @Local
 public interface RoomSessionBeanLocal {
-    public Long createRoom(Room newRoom) throws RoomExistException, UnknownPersistenceException;
+    public Long createRoom(Room newRoom, Long roomTypeId) throws RoomExistException, UnknownPersistenceException;
             
     public List<Room> viewAllRooms();
 
@@ -29,5 +29,7 @@ public interface RoomSessionBeanLocal {
     public void updateRoom(Room room) throws RoomNotFoundException, UpdateRoomException;
 
     public Room viewRoomDetails(Long roomId) throws RoomNotFoundException;
+
+    
     
 }
