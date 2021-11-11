@@ -23,6 +23,7 @@ import javax.persistence.Query;
 import util.exception.DeleteRoomException;
 import util.exception.RoomExistException;
 import util.exception.RoomNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateRoomException;
 
@@ -32,6 +33,9 @@ import util.exception.UpdateRoomException;
  */
 @Stateless
 public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLocal {
+
+    @EJB
+    private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal1;
 
     @EJB
     private RoomTypeSessionBeanLocal roomTypeSessionBeanLocal;
@@ -118,21 +122,4 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
         return query.getResultList();
     }
     
-   
-    public void allocateRooms() 
-    {
-        Date current = new Date();
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-        Query query = em.createQuery("SELECT r FROM Reservation r");
-        List<Reservation> reservations = query.getResultList();
-        
-        for (Reservation r: reservations)
-        {
-            if (fmt.format(r.getEndDate()).equals(fmt.format(current)))
-            {
-                
-            }
-                
-        }
-    }
 }

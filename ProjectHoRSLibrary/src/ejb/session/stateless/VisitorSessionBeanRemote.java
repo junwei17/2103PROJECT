@@ -19,7 +19,7 @@ import util.exception.UnknownPersistenceException;
  */
 @Remote
 public interface VisitorSessionBeanRemote {
-    public Long registerAsGuest(Guest newGuest) throws GuestExistException, UnknownPersistenceException, InputDataValidationException;
+    public Long registerAsGuest(Guest newGuest) throws GuestExistException, UnknownPersistenceException;
     
     public Guest retrieveGuestByUsername(String username) throws GuestNotFoundException;
 

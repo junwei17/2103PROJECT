@@ -10,9 +10,13 @@ import entity.Reservation;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import util.exception.GuestNotFoundException;
 import util.exception.ReservationNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 
 /**
  *
@@ -25,19 +29,17 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
     private EntityManager em;
 
     @Override
-    public String viewReservationDetails(Long reservationId) throws ReservationNotFoundException 
+    public Reservation viewReservationDetails(Long reservationId) throws ReservationNotFoundException 
     {
-        Reservation reservation = em.find(Reservation.class, reservationId);
-        if (reservation == null) 
-        {
-            throw new ReservationNotFoundException("No Reservation Found!");
+        Query query = em.createQuery("SELECT r FROM Reservation r WHERE r.ReservationId = :inReservationId");
+        query.setParameter("inReservationId", reservationId);
+        
+        try {
+            return(Reservation)query.getSingleResult();
+        }catch (NoResultException | NonUniqueResultException ex) {
+            throw new ReservationNotFoundException("The Reservation for " + reservationId + " does not exists!");
         }
         
-        String reservationDetails = "Reservation Start Date: " + reservation.getStartDate() + ".\n";
-        reservationDetails += "Reservation End Date: " + reservation.getEndDate() + ".\n";
-        //reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
-        reservationDetails += "Price: " + reservation.getFee() + ".\n";
-        return reservationDetails;
     }
     
     @Override

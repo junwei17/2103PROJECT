@@ -65,7 +65,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
             return (Partner)query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException ex)
         {
-            throw new PartnerNotFoundException("Staff Username " + username + " does not exist!");
+            throw new PartnerNotFoundException("Partner Username " + username + " does not exist!");
         }
     }
     

@@ -32,7 +32,7 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
     
     @Override
     public List<Object[]> searchRooms(Date startDate, Date endDate) {
-        Query query = em.createQuery("SELECT r.roomType, COUNT(r) FROM Room r WHERE r NOT IN (SELECT rr.room FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate) GROUP BY r.roomType");
+        Query query = em.createQuery("SELECT r.roomType, COUNT(r) FROM Room r WHERE r.roomId NOT IN (SELECT rr.room.roomId FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate) GROUP BY r.roomType");
         query.setParameter("inEndDate", endDate);
         query.setParameter("inStartDate", startDate);
         return query.getResultList();

@@ -34,15 +34,12 @@ public class VisitorSessionBean implements VisitorSessionBeanRemote, VisitorSess
 
     @PersistenceContext(unitName = "ProjectHoRS-ejbPU")
     private EntityManager entityManager;
-    private final ValidatorFactory validatorFactory;
-    private final Validator validator;
-    
+
     
     
     public VisitorSessionBean()
     {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
-        validator = validatorFactory.getValidator();
+        
     }
     
     @Override
@@ -85,53 +82,35 @@ public class VisitorSessionBean implements VisitorSessionBeanRemote, VisitorSess
     }
 
     @Override
-    public Long registerAsGuest(Guest newGuest) throws GuestExistException, UnknownPersistenceException, InputDataValidationException {
-        Set<ConstraintViolation<Visitor>>constraintViolations = validator.validate(newGuest);
+    public Long registerAsGuest(Guest newGuest) throws GuestExistException, UnknownPersistenceException{
         
-        if(constraintViolations.isEmpty())
+        try
         {
-            try
-            {
-                entityManager.persist(newGuest);
-                entityManager.flush();
+            entityManager.persist(newGuest);
+            entityManager.flush();
 
-                return newGuest.getGuestId();
-            }
-            catch(PersistenceException ex)
+            return newGuest.getVisitorId();
+        }
+        catch(PersistenceException ex)
+        {
+            if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
             {
-                if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
+                if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
                 {
-                    if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
-                    {
-                        throw new GuestExistException();
-                    }
-                    else
-                    {
-                        throw new UnknownPersistenceException(ex.getMessage());
-                    }
+                    throw new GuestExistException("Guest exists!");
                 }
                 else
                 {
                     throw new UnknownPersistenceException(ex.getMessage());
                 }
             }
-        }
-        else
-        {
-            throw new InputDataValidationException(prepareInputDataValidationErrorsMessage(constraintViolations));
-        }
-    }
-    
-    private String prepareInputDataValidationErrorsMessage(Set<ConstraintViolation<Visitor>>constraintViolations)
-    {
-        String msg = "Input data validation error!:";
-            
-        for(ConstraintViolation constraintViolation:constraintViolations)
-        {
-            msg += "\n\t" + constraintViolation.getPropertyPath() + " - " + constraintViolation.getInvalidValue() + "; " + constraintViolation.getMessage();
+            else
+            {
+                throw new UnknownPersistenceException(ex.getMessage());
+            }
         }
         
-        return msg;
+        
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

@@ -29,20 +29,12 @@ public class Visitor implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long visitorId;
     @Column(nullable = false, length = 32)
-    @NotNull
-    @Size(min = 3, max = 32)
     private String firstName;
     @Column(nullable = false, length = 32)
-    @NotNull
-    @Size(min = 1, max = 32)
     private String lastName;
     @Column(nullable = false, unique = true, length = 64)
-    @NotNull
-    @Size(min = 3, max = 64)
     private String email;
     @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(min = 1, max = 64)
     private String address;
 
     public Visitor() {

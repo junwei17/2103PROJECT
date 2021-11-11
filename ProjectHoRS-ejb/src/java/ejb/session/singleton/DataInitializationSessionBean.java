@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -131,10 +132,8 @@ public class DataInitializationSessionBean {
             roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("500"), roomType));
             roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Room Normal", RateTypeEnum.NORMAL, new BigDecimal("250"), roomType));
             
-                        
-            visitorSessionBeanLocal.registerAsGuest(new Guest("alice", "bob", "alice@gmail.com", "15AppleRoad", "username", "password"));
             
-        } catch (EmployeeUsernameExistException | UnknownPersistenceException | InputDataValidationException | RoomExistException | RoomRateExistException  | RoomTypeNotFoundException | GuestExistException ex)
+        } catch (EmployeeUsernameExistException | UnknownPersistenceException | RoomExistException | RoomRateExistException  | RoomTypeNotFoundException ex)
         {
             ex.printStackTrace();
         }

@@ -6,11 +6,13 @@
 package ejb.session.stateless;
 
 import entity.Room;
+import entity.RoomType;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.DeleteRoomException;
 import util.exception.RoomExistException;
 import util.exception.RoomNotFoundException;
+import util.exception.RoomTypeNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.UpdateRoomException;
 
@@ -29,7 +31,4 @@ public interface RoomSessionBeanLocal {
     public void updateRoom(Room room) throws RoomNotFoundException, UpdateRoomException;
 
     public Room viewRoomDetails(Long roomId) throws RoomNotFoundException;
-
-    
-    
 }

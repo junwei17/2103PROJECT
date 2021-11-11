@@ -20,6 +20,6 @@ public interface ReservationSessionBeanLocal {
 
     public List<Reservation> viewAllReservations(Long guestId) throws GuestNotFoundException, ReservationNotFoundException;
 
-    public String viewReservationDetails(Long reservationId) throws ReservationNotFoundException;
+    public Reservation viewReservationDetails(Long reservationId) throws ReservationNotFoundException;
     
 }

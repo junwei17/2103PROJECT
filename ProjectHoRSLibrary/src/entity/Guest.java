@@ -25,16 +25,9 @@ import javax.validation.constraints.Size;
 public class Guest extends Visitor implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long GuestId;
     @Column(nullable = false, unique = true, length = 64)
-    @NotNull
-    @Size(min = 6, max = 64)
     private String username;
     @Column(nullable = false, length = 64)
-    @NotNull
-    @Size(min = 6, max = 64)
     private String password;
     
     @OneToMany(mappedBy="guest")
@@ -42,50 +35,16 @@ public class Guest extends Visitor implements Serializable {
 
     public Guest() {
         super();
-        this.reservations = new ArrayList<>();
+        //this.reservations = new ArrayList<>();
     }
 
     public Guest(String firstName, String lastName, String email, String address, String username, String password) {
         super(firstName, lastName, email, address);
-        this.reservations = new ArrayList<>();
+        //this.reservations = new ArrayList<>();
         this.username = username;
         this.password = password;
     }
-    
-    
 
-    public Long getGuestId() {
-        return GuestId;
-    }
-
-    public void setGuestId(Long GuestId) {
-        this.GuestId = GuestId;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (GuestId != null ? GuestId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the GuestId fields are not set
-        if (!(object instanceof Guest)) {
-            return false;
-        }
-        Guest other = (Guest) object;
-        if ((this.GuestId == null && other.GuestId != null) || (this.GuestId != null && !this.GuestId.equals(other.GuestId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entity.Guest[ id=" + GuestId + " ]";
-    }
 
     /**
      * @return the username
@@ -115,16 +74,11 @@ public class Guest extends Visitor implements Serializable {
         this.password = password;
     }
 
-    /**
-     * @return the reservations
-     */
+    
     public List<Reservation> getReservations() {
         return reservations;
     }
 
-    /**
-     * @param reservations the reservations to set
-     */
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }

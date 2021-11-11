@@ -6,7 +6,9 @@
 package HoRSManagementClient;
 
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
+import ejb.session.stateless.PartnerSessionBeanRemote;
 import entity.Employee;
+import entity.Partner;
 import entity.Reservation;
 import entity.ReservationRoom;
 import entity.RoomType;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Scanner;
 import util.enumeration.AccessRightEnum;
 import util.exception.InvalidAccessRightException;
+import util.exception.PartnerExistException;
 import util.exception.ReservationExistException;
 import util.exception.ReservationRoomExistException;
 import util.exception.UnknownPersistenceException;
@@ -30,12 +33,14 @@ import util.exception.UnknownPersistenceException;
 public class FrontOfficeModule {
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
     private Employee currentEmployee;
+    private PartnerSessionBeanRemote partnerSessionBeanRemote;
     
     public FrontOfficeModule() {
     }
 
-    public FrontOfficeModule(FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, Employee currentEmployee) {
+    public FrontOfficeModule(FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, Employee currentEmployee) {
         this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
+        this.partnerSessionBeanRemote = partnerSessionBeanRemote;
         this.currentEmployee = currentEmployee;
     }
     
@@ -60,13 +65,13 @@ public class FrontOfficeModule {
                 
                 response = sc.nextInt();
                 if(response == 1) {
-                   doSearchRoom();
+                    doSearchRoom();
                 } else if (response == 2) {
-                   doReserveRoom();
+                    doReserveRoom();
                 } else if (response == 3){
                     doCheckInGuest();
                 } else if (response == 4) {
-               
+                    doViewAllPartners();
                 }
                 else if(response == 5) {
                     break;
@@ -187,5 +192,44 @@ public class FrontOfficeModule {
     
     public void doCheckOutGuest() {
         
+    public void doCreatePartner()
+    {
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Create New Partner ***\n");
+        Scanner scanner = new Scanner(System.in);
+        Partner newPartner = new Partner();
+        
+        System.out.println("Username >");
+        newPartner.setUsername(scanner.nextLine().trim());
+        System.out.println("Password >");
+        newPartner.setPassword(scanner.nextLine().trim());
+        
+        try
+        {
+            partnerSessionBeanRemote.createNewPartner(newPartner);
+            System.out.println("Successful!");
+        } catch (PartnerExistException ex)
+        {
+            System.out.println("Partner exists!");
+        } catch (UnknownPersistenceException ex)
+        {
+            System.out.println("Error!");
+        }
+    }
+    
+    public void doViewAllPartners() 
+    {
+        List<Partner> partners = partnerSessionBeanRemote.retrieveAllPartners();
+        
+        if (partners.isEmpty())
+        {
+            System.out.println("No Partners Found!");
+        } else
+        {
+            System.out.printf("%8s%15s\n", "Partner ID", "Name");
+            for (Partner partner : partners)
+            {
+                System.out.printf("%8s%20s\n", partner.getPartnerId(), partner.getUsername());
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.VisitorSessionBeanRemote;
 import entity.Guest;
 import entity.Reservation;
+import entity.ReservationRoom;
 import entity.RoomType;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -25,12 +26,14 @@ import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.ReservationExistException;
 import util.exception.ReservationNotFoundException;
+import util.exception.ReservationRoomExistException;
 import util.exception.UnknownPersistenceException;
 
 /**
  *
  * @author harmo
  */
+
 public class MainApp {
     private VisitorSessionBeanRemote visitorSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
@@ -80,14 +83,7 @@ public class MainApp {
                     }
                 }
                 else if(response == 2){
-                    try{
-                        doRegisterAsGuest();
-                        System.out.println("Registration successful!\n");
-                    }
-                    catch (GuestExistException | UnknownPersistenceException | InputDataValidationException ex) {
-                        System.out.println("Registration Error!: " + ex.getMessage());
-                    }
-                    
+                    doRegisterAsGuest();
                 } else if(response == 3){
                     doSearchRoom();
                 } else if(response == 4) {
@@ -126,38 +122,35 @@ public class MainApp {
         }
     }
     
-    private void doRegisterAsGuest() throws GuestExistException, UnknownPersistenceException, InputDataValidationException
+    private void doRegisterAsGuest()
     {
         Scanner scanner = new Scanner(System.in);
-        String firstName = "";
-        String lastName = "";
-        String email = "";
-        String address = "";
-        String username = "";
-        String password = "";
+        
         
         System.out.println("*** HoRS Reservation Client :: Register ***\n");
         System.out.print("Enter first name> ");
-        firstName = scanner.nextLine().trim();
+        String firstName = scanner.nextLine().trim();
         System.out.print("Enter last name> ");
-        lastName = scanner.nextLine().trim();
+        String lastName = scanner.nextLine().trim();
         System.out.print("Enter email> ");
-        email = scanner.nextLine().trim();
+        String email = scanner.nextLine().trim();
         System.out.print("Enter address> ");
-        address = scanner.nextLine().trim();
+        String address = scanner.nextLine().trim();
         System.out.print("Enter username> ");
-        username = scanner.nextLine().trim();
+        String username = scanner.nextLine().trim();
         System.out.print("Enter password> ");
-        password = scanner.nextLine().trim();
+        String password = scanner.nextLine().trim();
         
-        if(username.length() > 0 && password.length() > 0 && firstName.length() > 0 && lastName.length() > 0
-                && email.length() > 0 && address.length() > 0)
+        try
         {
             visitorSessionBeanRemote.registerAsGuest(new Guest(firstName, lastName, email, address, username, password));
-        }
-        else 
+            System.out.println("Registration successful!\n");
+        } catch(GuestExistException ex)
         {
-            throw new InputDataValidationException("Missing Data!");
+            System.out.println("Guest already exists!\n");
+        } catch (UnknownPersistenceException ex)
+        {
+            System.out.println("Error!" + ex.getMessage() + "\n");
         }
         
         
@@ -173,7 +166,7 @@ public class MainApp {
         
         while(true)
         {
-            System.out.println("*** Point-of-Sale (POS) System (v4.3) ***\n");
+            System.out.println("*** HoRS Reservation Client***\n");
             System.out.println("You are login as " + currentGuest.getFirstName() + " " + currentGuest.getLastName() + ".\n");
             System.out.println("1: Reserve Hotel Room");
             System.out.println("2: View My Reservation Details");
@@ -193,37 +186,11 @@ public class MainApp {
                 }
                 else if(response == 2)
                 {
-                    System.out.println("Reservation ID> ");
-                    Long reservationId = scanner.nextLong();
-                    
-                    try
-                    {
-                        String reservationDetails = doViewReservationDetails(reservationId);
-                        System.out.println(reservationDetails);
-                    }
-                    catch (ReservationNotFoundException ex)
-                    {
-                        System.out.println("Error!" + ex.getMessage());
-                    }
+                    doViewReservationDetails();
                 }
                 else if (response == 3)
                 {
-                    try
-                    {
-                        List<Reservation> reservations = doViewAllReservations();
-                        for (Reservation reservation : reservations)
-                        {
-                            String reservationDetails = "Reservation Start Date: " + reservation.getStartDate() + ".\n";
-                            reservationDetails += "Reservation End Date: " + reservation.getEndDate() + ".\n";
-                            //reservationDetails += "Number of Rooms: " + reservation.getNumberOfRooms() + ".\n";
-                            reservationDetails += "Price: " + reservation.getFee() + ".\n";
-                            System.out.println(reservationDetails);
-                        }
-                    }
-                    catch (ReservationNotFoundException ex)
-                    {
-                        System.out.println("Error! " + ex.getMessage());
-                    }
+                    doViewAllReservations();
                 }
                 else if (response == 4)
                 {
@@ -316,15 +283,21 @@ public class MainApp {
             newReservation.setEndDate(dateEnd);
             newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
             try {
-                frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
-            } catch(ReservationExistException ex) {
+                Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
+                System.out.println("Can Create room!");
+                for (int i = 0; i < number; i++)
+                {
+                    ReservationRoom reservationRoom = new ReservationRoom();
+                    reservationRoom.setRoomType((RoomType)list.get(option - 1)[0]);
+                    frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , reservationId);
+                    
+                }
+            } catch(ReservationExistException | ReservationRoomExistException ex) {
                 System.out.println("Reservation already exists!");
             } catch (UnknownPersistenceException ex) {
-                System.out.println("Unknown Error!");
+                System.out.println("Unknown error!");
             }
         }
-        
-        
     }
     
     public List<Object[]> doSearchRoom(Date dateStart, Date dateEnd) {
@@ -335,24 +308,42 @@ public class MainApp {
             System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], ((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight());
             count++;
         }
-        System.out.println("end here");
         return list;
     }
     
-    private String doViewReservationDetails(Long reservationId) throws ReservationNotFoundException{
-        return reservationSessionBeanRemote.viewReservationDetails(reservationId);
-    }
-    
-    private List<Reservation> doViewAllReservations() throws ReservationNotFoundException
-    {
+    private void doViewReservationDetails(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** HoRS Reservation Client :: View Reservation Details ***\n");
+        System.out.println("Reservation ID > ");
+        Long reservationId = sc.nextLong();
         try
         {
-            return reservationSessionBeanRemote.viewAllReservations(currentGuest.getGuestId());
+        
+            Reservation reservation = reservationSessionBeanRemote.viewReservationDetails(reservationId);
+            System.out.printf("%8s%15s%20s%20s%20s%20s\n", "ReservationID", "StartDate", "EndDate", "fee");
+            System.out.printf("%8s%20s%20s%20s\n", reservation.getReservationId(), reservation.getStartDate(), reservation.getEndDate(), reservation.getFee());
+        } catch (ReservationNotFoundException ex)
+        {
+            System.out.println("No Reservation Found!");
+        }
+    }
+    
+    private void doViewAllReservations() 
+    {
+        System.out.println("*** HoRS Reservation Client :: View All My Reservations ***\n");
+        try
+        {
+            List<Reservation> reservations = reservationSessionBeanRemote.viewAllReservations(currentGuest.getVisitorId());
+            System.out.printf("%8s%15s%20s%20s%20s%20s\n", "ReservationID", "StartDate", "EndDate", "fee");
+            for (Reservation reservation : reservations)
+            {
+                System.out.printf("%8s%20s%20s%20s\n", reservation.getReservationId(), reservation.getStartDate(), reservation.getEndDate(), reservation.getFee());
+            }
         }
         catch(GuestNotFoundException | ReservationNotFoundException ex)
         {
-            throw new ReservationNotFoundException(ex.getMessage());
+            System.out.println("Error! " + ex.getMessage());
         }
     }
-        
+      
 }
