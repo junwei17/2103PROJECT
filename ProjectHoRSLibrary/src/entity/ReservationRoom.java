@@ -29,6 +29,7 @@ public class ReservationRoom implements Serializable {
     private Long reservationRoomId;
     private RoomType roomType;
     
+    @OneToOne
     @JoinColumn(nullable = true)
     private Room room;
 

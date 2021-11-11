@@ -19,10 +19,10 @@ import javax.ejb.Remote;
 public interface AdminSessionBeanRemote {
     public void allocateRoom(Date startDate);
 
-    public Long searchRooms(Date startDate, Date endDate, Long roomTypeId);
+    public List<Object> searchRooms(Date startDate, Date endDate, Long roomTypeId);
 
     public List<Object[]> reservationsToFulfill(Date startDate);
 
-    public void setRoom(ReservationRoom reservationRoom, Room room);
+    public void setRoom(Long reservationRoomId, Long roomId);
     
 }

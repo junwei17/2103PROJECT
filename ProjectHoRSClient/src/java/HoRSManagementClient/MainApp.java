@@ -7,6 +7,7 @@ package HoRSManagementClient;
 
 import ejb.session.stateless.AdminSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.ExceptionReportRemote;
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
@@ -34,11 +35,12 @@ public class MainApp {
     private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
     private AdminSessionBeanRemote adminSessionBeanRemote;
+    private ExceptionReportRemote exceptionReportRemote;
             
     public MainApp() {
     }
     
-    public MainApp(AdminSessionBeanRemote adminSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote) {
+    public MainApp(AdminSessionBeanRemote adminSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, ExceptionReportRemote exceptionReportRemote) {
         this.adminSessionBeanRemote = adminSessionBeanRemote;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
@@ -46,6 +48,7 @@ public class MainApp {
         this.roomTypeSessionBeanRemote = roomTypeSessionBeanRemote;
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
+        this.exceptionReportRemote = exceptionReportRemote;
         
     }
     
@@ -70,7 +73,7 @@ public class MainApp {
                         doLogin();
                         System.out.println("Login successful!\n");
                         System.out.println("Welcome, " + currentEmployee.getEmployeeUsername() + "!\n");
-                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote, adminSessionBeanRemote, roomSessionBeanRemote);
+                        systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote, adminSessionBeanRemote, roomSessionBeanRemote, exceptionReportRemote);
                         hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee, roomRateSessionBeanRemote);
                         frontOfficeModule = new FrontOfficeModule(frontOfficeModuleSessionBeanRemote, currentEmployee);
                         menuMain();

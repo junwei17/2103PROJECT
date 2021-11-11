@@ -7,9 +7,11 @@ package HoRSManagementClient;
 
 import ejb.session.stateless.AdminSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.ExceptionReportRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import entity.Employee;
+import entity.Exceptions;
 import entity.Partner;
 import entity.ReservationRoom;
 import entity.RoomType;
@@ -20,7 +22,9 @@ import java.util.List;
 import java.util.Scanner;
 import javafx.util.Pair;
 import util.enumeration.AccessRightEnum;
+import util.enumeration.ExceptionTypeEnum;
 import util.exception.EmployeeUsernameExistException;
+import util.exception.ExceptionExistException;
 import util.exception.InvalidAccessRightException;
 import util.exception.PartnerExistException;
 import util.exception.RoomNotFoundException;
@@ -36,17 +40,19 @@ public class SystemAdministrationModule {
     private PartnerSessionBeanRemote partnerSessionBeanRemote;
     private AdminSessionBeanRemote adminSessionBeanRemote;
     private RoomSessionBeanRemote roomSessionBeanRemote;
+    private ExceptionReportRemote exceptionReportRemote;
 
     public SystemAdministrationModule() {
     }
 
-    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, Employee currentEmployee, PartnerSessionBeanRemote partnerSessionBeanRemote, AdminSessionBeanRemote adminSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote) {
+    public SystemAdministrationModule(EmployeeSessionBeanRemote employeeSessionBeanRemote, Employee currentEmployee, PartnerSessionBeanRemote partnerSessionBeanRemote, AdminSessionBeanRemote adminSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, ExceptionReportRemote exceptionReportRemote) {
         this();
         this.adminSessionBeanRemote =  adminSessionBeanRemote;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.currentEmployee = currentEmployee;
+        this.exceptionReportRemote = exceptionReportRemote;
     }
     
     public void menuSystemAminstration() throws InvalidAccessRightException {
@@ -187,25 +193,34 @@ public class SystemAdministrationModule {
         List<Object[]> fufillList = adminSessionBeanRemote.reservationsToFulfill(dateStart);
         if(!fufillList.isEmpty()) {
             for(Object[] obj : fufillList){
-                System.out.println("obj is " + (Date)obj[0] + (Date)obj[1] + ((ReservationRoom)obj[2]).getReservationRoomId());
-                Long result = adminSessionBeanRemote.searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId());
+                System.out.println("obj is " + (Date)obj[0] + (Date)obj[1] + " for reservation " + ((ReservationRoom)obj[2]).getReservationRoomId() + " need room " + ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId());
+                List<Object> result = adminSessionBeanRemote.searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId());
                 System.out.println("result here is " + result);
                 try {
-                if(result == -1) {
-                    //create new Exception
+                if(result.size() == 0) {
                     result = adminSessionBeanRemote.searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId() + 1);
+                    
                     System.out.println("result there is " + result);
-                    if(result == -1){
-                        //create new Exception
+                    if(result.size() == 0){
+                        try {
+                            exceptionReportRemote.createExceptions(new Exceptions((Long)((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[1]));
+                        } catch (ExceptionExistException | UnknownPersistenceException ex) {
+                            System.out.println("Unable to make Exception in Exception Report!");
+                        }
                     } else {
-                        System.out.println(roomSessionBeanRemote.viewRoomDetails(result).getRoomId() + " here");
-                        adminSessionBeanRemote.setRoom((ReservationRoom)obj[2], roomSessionBeanRemote.viewRoomDetails(result) );
-                        //((ReservationRoom)obj[2]).setRoom(roomSessionBeanRemote.viewRoomDetails(result));
+                        System.out.println(roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId() + " here");
+                        adminSessionBeanRemote.setRoom(((ReservationRoom)obj[2]).getReservationRoomId(), roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId());
+                        try {
+                            exceptionReportRemote.createExceptions(new Exceptions((Long)((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[0]));
+                        } catch (ExceptionExistException | UnknownPersistenceException ex) {
+                            System.out.println("Unable to make Exception in Exception Report!");
+                        }
                     }
                 } else {
                     System.out.println("herereee");
-                    System.out.println(roomSessionBeanRemote.viewRoomDetails(result).getRoomId() + " there");
-                    ((ReservationRoom)obj[2]).setRoom(roomSessionBeanRemote.viewRoomDetails(result));
+                    System.out.println(roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId() + " there");
+                    //((ReservationRoom)obj[2]).setRoom(roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)));
+                    adminSessionBeanRemote.setRoom(((ReservationRoom)obj[2]).getReservationRoomId(), roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId());
                 }
                 } catch (RoomNotFoundException ex) {
                     System.out.println("Room not Found!");

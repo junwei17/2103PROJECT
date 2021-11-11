@@ -32,7 +32,7 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
     @Override
     public void allocateRoom(Date startDate)
     {
-        List<Object[]> fufillList = reservationsToFulfill(startDate);
+        /*List<Object[]> fufillList = reservationsToFulfill(startDate);
         if(!fufillList.isEmpty()) {
             for(Object[] obj : fufillList){
                 System.out.println("obj is " + (Date)obj[0] + (Date)obj[1] + ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId());
@@ -87,16 +87,12 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
     }
 
     @Override
-    public Long searchRooms(Date startDate, Date endDate, Long roomTypeId) {
-        Query query = em.createQuery("SELECT r.roomId FROM Room r WHERE r.roomId NOT IN (SELECT rr.room.roomId FROM ReservationRoom rr WHERE rr.reservation.startDate <= :inEndDate AND rr.reservation.endDate >= :inStartDate) AND r.roomType.roomTypeId = :inRoomTypeId ORDER BY r.roomId ASC");
+    public List<Object> searchRooms(Date startDate, Date endDate, Long roomTypeId) {
+        Query query = em.createQuery("SELECT r.roomId FROM Room r WHERE r.roomType.roomTypeId = :inRoomTypeId AND r.roomId NOT IN (SELECT rr.room.roomId FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate)");
         query.setParameter("inEndDate", endDate);
         query.setParameter("inStartDate", startDate);
         query.setParameter("inRoomTypeId", roomTypeId);
-        if(query.getResultList().isEmpty()){
-            return new Long(-1);
-        } else {
-            return (Long)query.getResultList().get(0);
-        }
+        return query.getResultList();
     }
     
     @Override
@@ -107,8 +103,10 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
     }
     
     @Override
-    public void setRoom(ReservationRoom reservationRoom, Room room) {
+    public void setRoom(Long reservationRoomId, Long roomId) {
+        ReservationRoom reservationRoom = em.find(ReservationRoom.class, reservationRoomId);
+        Room room = em.find(Room.class, roomId);
         reservationRoom.setRoom(room);
-        em.flush();
+        em.persist(reservationRoom);
     }
 }

@@ -8,6 +8,7 @@ package HoRSManagementClient;
 //import ejb.session.stateless.EmployeeSessionBeanRemote;
 import ejb.session.stateless.AdminSessionBeanRemote;
 import ejb.session.stateless.EmployeeSessionBeanRemote;
+import ejb.session.stateless.ExceptionReportRemote;
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
 import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
@@ -35,9 +36,11 @@ public class Main {
     private static FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
     @EJB
     private static AdminSessionBeanRemote adminSessionBeanRemote;
+    @EJB
+    private static ExceptionReportRemote exceptionReportRemote;
     
     public static void main(String[] args) {
-         MainApp mainApp = new MainApp(adminSessionBeanRemote, employeeSessionBeanRemote, partnerSessionBeanRemote, roomTypeSessionBeanRemote, roomSessionBeanRemote, roomRateSessionBeanRemote, frontOfficeModuleSessionBeanRemote);
+         MainApp mainApp = new MainApp(adminSessionBeanRemote, employeeSessionBeanRemote, partnerSessionBeanRemote, roomTypeSessionBeanRemote, roomSessionBeanRemote, roomRateSessionBeanRemote, frontOfficeModuleSessionBeanRemote, exceptionReportRemote);
          mainApp.runApp();
     }
     

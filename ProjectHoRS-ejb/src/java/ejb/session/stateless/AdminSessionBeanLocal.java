@@ -18,8 +18,10 @@ public interface AdminSessionBeanLocal {
 
     public void allocateRoom(Date startDate);
 
-    public Long searchRooms(Date startDate, Date endDate, Long roomTypeId);
+    public List<Object> searchRooms(Date startDate, Date endDate, Long roomTypeId);
 
     public List<Object[]> reservationsToFulfill(Date startDate);
+
+    public void setRoom(Long reservationRoomId, Long roomId);
     
 }
