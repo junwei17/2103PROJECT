@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Exceptions;
 import entity.ReservationRoom;
 import entity.Room;
 import java.util.Date;
@@ -24,5 +25,7 @@ public interface AdminSessionBeanRemote {
     public List<Object[]> reservationsToFulfill(Date startDate);
 
     public void setRoom(Long reservationRoomId, Long roomId);
+    
+    
     
 }

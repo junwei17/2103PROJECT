@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Exceptions;
+import java.util.List;
 import javax.ejb.Local;
 import util.exception.ExceptionExistException;
 import util.exception.UnknownPersistenceException;
@@ -18,5 +19,6 @@ import util.exception.UnknownPersistenceException;
 public interface ExceptionReportLocal {
 
     public Long createExceptions(Exceptions exception) throws ExceptionExistException, UnknownPersistenceException;
+    public List<Exceptions> retrieveAllExceptions();
     
 }

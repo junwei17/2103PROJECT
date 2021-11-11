@@ -86,5 +86,47 @@ public class Exceptions implements Serializable {
     public void setExceptionTypeEnum(ExceptionTypeEnum exceptionTypeEnum) {
         this.exceptionTypeEnum = exceptionTypeEnum;
     }
+
+    /**
+     * @return the reservationId
+     */
+    public Long getReservationId() {
+        return reservationId;
+    }
+
+    /**
+     * @param reservationId the reservationId to set
+     */
+    public void setReservationId(Long reservationId) {
+        this.reservationId = reservationId;
+    }
+
+    /**
+     * @return the reservationRoomId
+     */
+    public Long getReservationRoomId() {
+        return reservationRoomId;
+    }
+
+    /**
+     * @param reservationRoomId the reservationRoomId to set
+     */
+    public void setReservationRoomId(Long reservationRoomId) {
+        this.reservationRoomId = reservationRoomId;
+    }
+
+    /**
+     * @return the reservationRoomTypeId
+     */
+    public Long getReservationRoomTypeId() {
+        return reservationRoomTypeId;
+    }
+
+    /**
+     * @param reservationRoomTypeId the reservationRoomTypeId to set
+     */
+    public void setReservationRoomTypeId(Long reservationRoomTypeId) {
+        this.reservationRoomTypeId = reservationRoomTypeId;
+    }
     
 }

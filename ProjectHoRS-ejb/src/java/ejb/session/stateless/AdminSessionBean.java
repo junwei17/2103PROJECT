@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Exceptions;
 import entity.Reservation;
 import entity.ReservationRoom;
 import entity.Room;
@@ -110,9 +111,4 @@ public class AdminSessionBean implements AdminSessionBeanRemote, AdminSessionBea
         em.persist(reservationRoom);
     }
     
-    @Override
-    public List<Exceptions> retrieveAllEmployees() {
-        Query query = entityManager.createQuery("SELECT e FROM Employee e");
-        return query.getResultList();
-    }
 }

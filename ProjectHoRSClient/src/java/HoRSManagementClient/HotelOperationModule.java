@@ -447,10 +447,10 @@ public class HotelOperationModule {
     public void viewReport() {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: View Room Allocation Exception Report ***\n");
-        List<Exceptions> exceptions = exceptionReportRemote.viewAllExceptions();
-        System.out.printf("%8s%15s%20s%20s\n", "Room ID", "Room Type", "Room Number", "Room Status");
-        for(Room room : rooms) {
-            System.out.printf("%8s%20s%20s%20s\n", room.getRoomId(), room.getRoomType().getRoomTypeId(), room.getRoomNo(), room.getStatus());
+        List<Exceptions> exceptions = exceptionReportRemote.retrieveAllExceptions();
+        System.out.printf("%20s%20s%20s%20s\n", "Reservation ID", "ReservationRoom ID", "Room Type ID", "Exception Type");
+        for(Exceptions exception : exceptions) {
+            System.out.printf("%20s%20s%20s%20s\n", exception.getReservationId(), exception.getReservationRoomId(), exception.getReservationRoomTypeId(), exception.getExceptionTypeEnum());
         }
         
     }
@@ -694,8 +694,11 @@ public class HotelOperationModule {
     }
     
     public void viewAllRoomRates() {
-        System.out.println("cant do this shit");
-        
+        List<RoomRate> roomRates = roomRateSessionBeanRemote.viewAllRoomRates();
+        System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
+        for(RoomRate roomRate : roomRates) {
+            System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), roomRate.getValidityStartDate().toString(), roomRate.getValidityEndDate().toString(), roomRate.isDisabled());
+        }
     }
     
     

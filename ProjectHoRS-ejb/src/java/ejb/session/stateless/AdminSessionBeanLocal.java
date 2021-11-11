@@ -5,6 +5,7 @@
  */
 package ejb.session.stateless;
 
+import entity.Exceptions;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;

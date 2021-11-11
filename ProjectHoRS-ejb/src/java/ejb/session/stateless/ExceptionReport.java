@@ -7,10 +7,12 @@ package ejb.session.stateless;
 
 import entity.Exceptions;
 import entity.Room;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import util.exception.ExceptionExistException;
 import util.exception.RoomExistException;
 import util.exception.UnknownPersistenceException;
@@ -51,5 +53,10 @@ public class ExceptionReport implements ExceptionReportRemote, ExceptionReportLo
         }
     }
 
+    @Override
+    public List<Exceptions> retrieveAllExceptions() {
+        Query query = em.createQuery("SELECT e FROM Exceptions e");
+        return query.getResultList();
+    }
 
 }
