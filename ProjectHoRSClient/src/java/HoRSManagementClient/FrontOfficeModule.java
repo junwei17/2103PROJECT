@@ -139,8 +139,9 @@ public class FrontOfficeModule {
         System.out.println("Enter Visitor Last Name > ");
         input = sc.nextLine().trim();
         visitor.setLastName(input);
+        Long visitorId = new Long(-1);
         try {
-            visitorSessionBeanRemote.createVisitor(visitor);
+            visitorId = visitorSessionBeanRemote.createVisitor(visitor);
         } catch (UnknownPersistenceException ex) {
             System.out.println("Unknown Error!");
         }
@@ -169,6 +170,7 @@ public class FrontOfficeModule {
         int option = sc.nextInt();
         System.out.println("Enter number of rooms required > ");
         int number = sc.nextInt();
+        if(!visitorId.equals(-1)){
         if ((Long)list.get(option - 1)[1] < number) {
             System.out.println("Unable to make a reservation as the required room is over the number of available rooms!");
         } else {
@@ -177,8 +179,8 @@ public class FrontOfficeModule {
             newReservation.setEndDate(dateEnd);
             newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
             try {
-                Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation, visitor.getVisitorId());
-                System.out.println("Can Create room!");
+                Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation, visitorId);
+                System.out.println("Can Reserve room!");
                 for (int i = 0; i < number; i++)
                 {
                     ReservationRoom reservationRoom = new ReservationRoom();
@@ -191,6 +193,9 @@ public class FrontOfficeModule {
             } catch (UnknownPersistenceException ex) {
                 System.out.println("Unknown error!");
             }
+        }
+        } else {
+            System.out.println("Unknown error!");
         }
     }
     
