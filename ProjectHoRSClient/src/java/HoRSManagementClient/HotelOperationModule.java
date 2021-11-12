@@ -78,7 +78,7 @@ public class HotelOperationModule {
             System.out.println("1: Create New Room Type");
             System.out.println("2: View Room Type");
             System.out.println("3: Update Room Type");
-            System.out.println("4: Delete Room Type Details");
+            System.out.println("4: Delete Room Type");
             System.out.println("5: View All Room Type");
             System.out.println("6: Create New Room");
             System.out.println("7: Update Room");
@@ -308,9 +308,9 @@ public class HotelOperationModule {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: View All Room Types ***\n");
         List<RoomType> roomTypes = roomTypeSessionBeanRemote.viewAllRoomTypes();
-        System.out.printf("%8s%15s%20s%20s%20s%20s\n", "Room Type ID", "Name", "Description", "Size", "Bed", "Capacity");
+        System.out.printf("%8s%15s%20s%20s%20s%20s%20s\n", "Room Type ID", "Name", "Description", "Size", "Bed", "Capacity", "Next Higher Room Type");
         for(RoomType roomType : roomTypes) {
-            System.out.printf("%8s%20s%20s%20s%20s%20s\n", roomType.getRoomTypeId(), roomType.getName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity());
+            System.out.printf("%8s%20s%20s%20s%20s%20s%20s\n", roomType.getRoomTypeId(), roomType.getName(), roomType.getDescription(), roomType.getSize(), roomType.getBed(), roomType.getCapacity(), roomType.getNextHigherRoomType());
         }
         System.out.println("Press any key to continue...> ");
         sc.nextLine();
@@ -706,17 +706,22 @@ public class HotelOperationModule {
     
     public void viewAllRoomRates() {
         List<RoomRate> roomRates = roomRateSessionBeanRemote.viewAllRoomRates();
-        System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
+        System.out.println(roomRates);
+        System.out.printf("%50s%50s%50s%50s%50s%50s%50s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
         for(RoomRate roomRate : roomRates) {
             String output = "null";
             String output1 = "null";
-            if (!roomRate.getValidityStartDate().toString().equals("null")) {
+            //String output2 = "null";
+            if (roomRate.getValidityStartDate() != null) {
                 output = roomRate.getValidityStartDate().toString();
             }
-            if (!roomRate.getValidityEndDate().toString().equals("null")) {
+            if (roomRate.getValidityEndDate() != null) {
                 output1 = roomRate.getValidityEndDate().toString();
             }
-            System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), output, output1, roomRate.isDisabled());
+            //if (!roomRate.getValidityEndDate().toString().equals("null")) {
+            //    output1 = roomRate.getValidityEndDate().toString();
+            //}
+            System.out.printf("%50s%50s%50s%50s%50s%50s%50s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), output, output1, roomRate.isDisabled());
         }
     }
     

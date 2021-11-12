@@ -101,16 +101,7 @@ public class FrontOfficeModule {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Search Room ***\n");
-        System.out.println("Enter Start Date (dd/MM/yyyy)> ");
-            String start = sc.nextLine().trim();
-                Date dateStart = null;
-                if(null != start && start.trim().length() > 0){
-                  try {
-                      dateStart = format.parse(start);
-                  } catch (ParseException ex) {
-                      System.out.println("Problems parsing the given date!");
-                  }
-                }
+            Date dateStart = new Date();
             System.out.println("Enter End Date (dd/MM/yyyy)> ");
             String end = sc.nextLine().trim();
             Date dateEnd = null;
@@ -121,7 +112,6 @@ public class FrontOfficeModule {
                   System.out.println("Problems parsing the given date!");
               }
             }
-            //System.out.println(((dateEnd.getTime() - dateStart.getTime()) / (24*60*60*1000)));
             
         System.out.printf("%15s%30s%30s%30s\n", "Option", "Room Type", "Available Rooms", "Reservation Amount");
         List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(/*format.format(cal.getTime())*/ dateStart, dateEnd);
@@ -243,14 +233,12 @@ public class FrontOfficeModule {
     
     public List<Object[]> doSearchRoom(Date dateStart, Date dateEnd) {
         System.out.printf("%15s%30s%30s%30s\n", "Option", "Room Type", "Available Rooms", "Reservation Amount");
-        List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(/*format.format(cal.getTime())*/ dateStart, dateEnd);
+        List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(dateStart, dateEnd);
         int count = 1;
-        System.out.println(new BigDecimal((dateEnd.getTime() - dateEnd.getTime()) / (24*60*60*1000)));
         for(Object[] obj : list){
             System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], (((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight()).multiply(new BigDecimal((dateEnd.getTime() - dateStart.getTime()) / (24*60*60*1000))));
             count++;
         }
-        System.out.println("end here");
         return list;
     }
     

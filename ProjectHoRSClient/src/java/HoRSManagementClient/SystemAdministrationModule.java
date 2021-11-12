@@ -132,9 +132,9 @@ public class SystemAdministrationModule {
         Scanner sc = new Scanner(System.in);
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: System Adminstration :: View All Employees ***\n");
         List<Employee> employees = employeeSessionBeanRemote.retrieveAllEmployees();
-        System.out.printf("%8s%20s%20s%20s\n","Employee Id", "Access Right", "Username", "Password");
+        System.out.printf("%30s%30s%30s%30s\n","Employee Id", "Access Right", "Username", "Password");
         for(Employee employee : employees) {
-            System.out.printf("%8s%20s%20s%20s\n", employee.getEmployeeId(), employee.getAccessRightEnum(), employee.getEmployeeUsername(), employee.getPassword());
+            System.out.printf("%30s%30s%30s%30s\n", employee.getEmployeeId(), employee.getAccessRightEnum(), employee.getEmployeeUsername(), employee.getPassword());
         }
         System.out.println("Press Any Key To Continue");
         sc.nextLine();

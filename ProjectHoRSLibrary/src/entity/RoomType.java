@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import util.enumeration.AmenitiesEnum;
 
 /**
@@ -55,6 +54,24 @@ public class RoomType implements Serializable {
         this();
         this.name = name;
         this.nextHigherRoomType = nextHigherRoomType;
+    }
+
+    public RoomType(String name, String description, String bed, Integer size, Integer capacity, Long nextHigherRoomType) {
+        this();
+        this.name = name;
+        this.bed = bed;
+        this.description = description;
+        this.size = size;
+        this.capacity = capacity;
+        this.nextHigherRoomType = nextHigherRoomType;
+    }
+        public RoomType(String name, String description, String bed, Integer size, Integer capacity) {
+        this();
+        this.name = name;
+        this.bed = bed;
+        this.description = description;
+        this.size = size;
+        this.capacity = capacity;
     }
     
     
