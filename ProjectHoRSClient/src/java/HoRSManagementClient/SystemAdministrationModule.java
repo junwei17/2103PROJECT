@@ -200,7 +200,7 @@ public class SystemAdministrationModule {
                 if(result.size() == 0) {
                     result = adminSessionBeanRemote.searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getNextHigherRoomType());
                     
-                    System.out.println("result there is " + result);
+                    //System.out.println("result there is " + result);
                     if(result.size() == 0){
                         try {
                             Exceptions newExceptions = new Exceptions(((ReservationRoom)obj[2]).getReservation().getReservationId(), (((ReservationRoom)obj[2]).getReservationRoomId()), (((ReservationRoom)obj[2]).getRoomType().getRoomTypeId()), ExceptionTypeEnum.values()[1]);

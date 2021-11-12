@@ -87,16 +87,12 @@ public class RoomTypeSessionBean implements RoomTypeSessionBeanRemote, RoomTypeS
     @Override
     public void updateRoomType(RoomType roomType) throws RoomTypeNotFoundException, UpdateRoomTypeException {
         if(roomType != null && roomType.getRoomTypeId() != null) {
-            RoomType toBeUpdated = viewRoomTypeDetails(roomType.getRoomTypeId());
-            if(toBeUpdated.getName().equals(roomType.getName())) {
+                RoomType toBeUpdated = viewRoomTypeDetails(roomType.getRoomTypeId());
+                toBeUpdated.setName(roomType.getName());
                 toBeUpdated.setDescription(roomType.getDescription());
                 toBeUpdated.setSize(roomType.getSize());
                 toBeUpdated.setCapacity(roomType.getCapacity());
                 toBeUpdated.setAmenitiesEnum(roomType.getAmenitiesEnum());
-                
-            } else {
-                throw new UpdateRoomTypeException("Name of Room Type record to be updated does not match the existing record");
-            }
         } else {
             throw new RoomTypeNotFoundException("Room Type not found or Room Type ID not provided!");
         }

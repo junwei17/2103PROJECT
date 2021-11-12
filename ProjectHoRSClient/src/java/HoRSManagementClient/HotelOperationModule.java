@@ -155,6 +155,8 @@ public class HotelOperationModule {
         RoomType newRoomType = new RoomType();
         
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Create New Room Type ***\n");
+        System.out.println("Enter Higher Room Type name (leave blank if there is no higher Room Type> ");
+        String nextHigherRoomTypeName = sc.nextLine().trim();
         System.out.println("Enter New Room Type Name> ");
         newRoomType.setName(sc.nextLine().trim());
         System.out.println("Enter New Room Type Description> ");
@@ -176,11 +178,9 @@ public class HotelOperationModule {
                 System.out.println("Invalid Option! Please try again!");
             }
         }
-        System.out.println("Enter Higher Room Type name> ");
-        String nextHigherRoomTypeName = sc.nextLine().trim();
 
         try {
-            if (!nextHigherRoomTypeName.equals("null"))
+            if (!nextHigherRoomTypeName.equals(""))
             {
                 RoomType nextHigherRoomType = roomTypeSessionBeanRemote.retreieveRoomTypeByName(nextHigherRoomTypeName);
                 newRoomType.setNextHigherRoomType(nextHigherRoomType.getRoomTypeId());
@@ -193,7 +193,7 @@ public class HotelOperationModule {
             System.out.println("An error has occured while creating the new Room Type!: The Room Type already exists!\n");
         } catch (RoomTypeNotFoundException ex)
         {
-            System.out.println("An error has occured while creating the new Room Type!: Room Type doesn't exist!\n");
+            System.out.println("An error has occured while creating the new Room Type!: Higher Room Type doesn't exist!\n");
         }
     }
     
@@ -277,6 +277,7 @@ public class HotelOperationModule {
         }
         try {
             roomTypeSessionBeanRemote.updateRoomType(roomType);
+            System.out.println("Room Type updated successfully!\n");
         } catch(RoomTypeNotFoundException | UpdateRoomTypeException ex) {
             System.out.println("An unknown error has occured while updating the room type!: " + ex.getMessage() + "\n");
         }
@@ -321,6 +322,8 @@ public class HotelOperationModule {
         
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Hotel Operation :: Create New Room ***\n");
         while(true) {
+            System.out.println("Enter New Room Number> ");
+            newRoom.setRoomNo(sc.nextLine().trim());
             System.out.println("Enter New Room Satuts (Enter y for available and n for not available)> ");
             String status = sc.nextLine().trim();
             if(status.equals("y")) {
@@ -338,9 +341,6 @@ public class HotelOperationModule {
         } catch (RoomTypeNotFoundException ex) {
             System.out.println("An error has occured while retrieving the Room Type: " + ex.getMessage() + "\n");
         }
-        System.out.println("Enter New Room Number> ");
-        newRoom.setRoomNo(sc.nextLine().trim());
-        System.out.println("the room now is " + newRoom.getRoomId() + " " + newRoom.getRoomNo() + " " + newRoom.getStatus());
         try {
             Long newRoomId = roomSessionBeanRemote.createRoom(newRoom,roomTypeId);
             System.out.println("New room " + newRoomId + " is created!");
@@ -708,7 +708,15 @@ public class HotelOperationModule {
         List<RoomRate> roomRates = roomRateSessionBeanRemote.viewAllRoomRates();
         System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", "Room Rate ID", "Name", "Rate Type", "Rate Per Night", "Validity Start Date", "Validity End Date", "Disabled");
         for(RoomRate roomRate : roomRates) {
-            System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), roomRate.getValidityStartDate().toString(), roomRate.getValidityEndDate().toString(), roomRate.isDisabled());
+            String output = "null";
+            String output1 = "null";
+            if (!roomRate.getValidityStartDate().toString().equals("null")) {
+                output = roomRate.getValidityStartDate().toString();
+            }
+            if (!roomRate.getValidityEndDate().toString().equals("null")) {
+                output1 = roomRate.getValidityEndDate().toString();
+            }
+            System.out.printf("%8s%15s%20s%20s%50s%50s%20s\n", roomRate.getRoomRateId(), roomRate.getName(), roomRate.getRateType(), roomRate.getRatePerNight(), output, output1, roomRate.isDisabled());
         }
     }
     

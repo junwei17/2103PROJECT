@@ -32,6 +32,8 @@ public interface FrontOfficeModuleSessionBeanLocal {
 
     public Long createReservation(Reservation newReservation) throws ReservationExistException, UnknownPersistenceException;
 
+    public void removeGuest(Long visitorId);
+
     
     
 }

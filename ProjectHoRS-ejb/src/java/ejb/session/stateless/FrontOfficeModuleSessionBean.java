@@ -33,9 +33,39 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
     
     @Override
     public List<Object[]> searchRooms(Date startDate, Date endDate) {
-        Query query = em.createQuery("SELECT r.roomType, COUNT(r) FROM Room r WHERE r.roomId NOT IN (SELECT rr.room.roomId FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate) GROUP BY r.roomType");
+        /*Query query = em.createQuery("SELECT r.roomType, COUNT(r) FROM Room r WHERE r.roomId NOT IN (SELECT rr.room.roomId FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate) GROUP BY r.roomType");
+        //Query query = em.createQuery("SELECT table1.roomType, (table1.number - table2.number) AS available FROM (SELECT r.roomType AS roomType, COUNT(r) AS number FROM Room r GROUP BY r.roomType)table1, (SELECT rr.roomType AS roomType, COUNT(rr) AS number FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate GROUP BY rr.roomType)table2 WHERE table1.roomType = table2.roomType)");
         query.setParameter("inEndDate", endDate);
         query.setParameter("inStartDate", startDate);
+        return query.getResultList();*/
+        List<Object[]> availableList = searchAvailableRooms();
+        List<Object[]> inUseList = searchRoomsInUse(startDate, endDate);
+        for(Object[] available : availableList){
+            RoomType roomType = (RoomType)available[0];
+            Long count = (Long)available[1];
+            for(Object[] inUse : inUseList) {
+                RoomType roomType2 = (RoomType)inUse[0];
+                Long count2 = (Long)inUse[1];
+                if(roomType2.getRoomTypeId() == roomType.getRoomTypeId()) {
+                    count -= count2;
+                }
+                available[1] = count;
+            }
+        }
+        return availableList;
+    }
+    
+    //@Override
+    public List<Object[]> searchRoomsInUse(Date startDate, Date endDate) {
+        Query query = em.createQuery("SELECT rr.roomType AS roomType, COUNT(rr) AS number FROM ReservationRoom rr WHERE rr.reservation.startDate < :inEndDate AND rr.reservation.endDate > :inStartDate GROUP BY rr.roomType");
+        query.setParameter("inEndDate", endDate);
+        query.setParameter("inStartDate", startDate);
+        return query.getResultList();
+    }
+    
+    //@Override
+    public List<Object[]> searchAvailableRooms() {
+        Query query = em.createQuery("SELECT r.roomType AS roomType, COUNT(r) AS number FROM Room r GROUP BY r.roomType");
         return query.getResultList();
     }
     
@@ -133,6 +163,24 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
             }
         
         }
+    }
+    
+    @Override
+    public void removeGuest(Long visitorId) {
+        Query query = em.createQuery("SELECT rr FROM ReservationRoom rr WHERE rr.reservation.visitor.visitorId = :inVisitorId");
+        query.setParameter("inVisitorId", visitorId);
+        List<ReservationRoom> list = (List<ReservationRoom>)query.getResultList();
+        for(ReservationRoom rr : list){
+            em.remove(rr);
+            System.out.println("removing" + rr.getReservationRoomId());
+        }
+        em.flush();
+        System.out.println("removing");
+        Query query1 = em.createQuery("SELECT r FROM Reservation r WHERE r.visitor.visitorId = :inVisitorId");
+        query1.setParameter("inVisitorId", visitorId);
+        Reservation r = (Reservation)query1.getSingleResult();
+        System.out.println(r.getReservationId());
+        em.remove(r);
     }
     
     

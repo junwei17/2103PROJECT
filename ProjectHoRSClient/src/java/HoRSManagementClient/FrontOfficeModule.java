@@ -5,9 +5,12 @@
  */
 package HoRSManagementClient;
 
+import ejb.session.stateless.AdminSessionBeanRemote;
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
+import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.VisitorSessionBeanRemote;
 import entity.Employee;
+import entity.Exceptions;
 import entity.Reservation;
 import entity.ReservationRoom;
 import entity.RoomType;
@@ -15,14 +18,20 @@ import entity.Visitor;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import javafx.util.Duration;
 import util.enumeration.AccessRightEnum;
+import util.enumeration.ExceptionTypeEnum;
+import util.exception.ExceptionExistException;
 import util.exception.InvalidAccessRightException;
 import util.exception.ReservationExistException;
 import util.exception.ReservationRoomExistException;
+import util.exception.RoomNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.VisitorNotFoundException;
 
@@ -34,14 +43,18 @@ public class FrontOfficeModule {
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
     private Employee currentEmployee;
     private VisitorSessionBeanRemote visitorSessionBeanRemote;
+    private AdminSessionBeanRemote adminSessionBeanRemote;
+    private RoomSessionBeanRemote roomSessionBeanRemote;
     
     public FrontOfficeModule() {
     }
 
-    public FrontOfficeModule(FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, Employee currentEmployee, VisitorSessionBeanRemote visitorSessionBeanRemote) {
+    public FrontOfficeModule(FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, Employee currentEmployee, VisitorSessionBeanRemote visitorSessionBeanRemote, AdminSessionBeanRemote adminSessionBeanRemote, RoomSessionBeanRemote remoteSessionBeanRemote) {
         this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
         this.currentEmployee = currentEmployee;
         this.visitorSessionBeanRemote = visitorSessionBeanRemote;
+        this.adminSessionBeanRemote = adminSessionBeanRemote;
+        this.roomSessionBeanRemote = remoteSessionBeanRemote;
     }
     
     public void menuFrontOffice() throws InvalidAccessRightException {
@@ -71,6 +84,7 @@ public class FrontOfficeModule {
                 } else if (response == 3){
                     doCheckInGuest();
                 } else if (response == 4) {
+                    doCheckOutGuest();
                 }
                 else if(response == 5) {
                     break;
@@ -107,12 +121,13 @@ public class FrontOfficeModule {
                   System.out.println("Problems parsing the given date!");
               }
             }
+            //System.out.println(((dateEnd.getTime() - dateStart.getTime()) / (24*60*60*1000)));
             
         System.out.printf("%15s%30s%30s%30s\n", "Option", "Room Type", "Available Rooms", "Reservation Amount");
         List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(/*format.format(cal.getTime())*/ dateStart, dateEnd);
         int count = 1;
         for(Object[] obj : list){
-            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], ((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight());
+            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], ((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight().multiply(new BigDecimal(((dateEnd.getTime() - dateStart.getTime()) / (24*60*60*1000)))));
             count++;
         }
         System.out.println("end here");
@@ -124,6 +139,7 @@ public class FrontOfficeModule {
         Scanner sc = new Scanner(System.in);
         //Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Reserve Room ***\n");
         System.out.println("Visitor Details \n");
         Visitor visitor = new Visitor();
@@ -145,16 +161,17 @@ public class FrontOfficeModule {
         } catch (UnknownPersistenceException ex) {
             System.out.println("Unknown Error!");
         }
-        System.out.println("Enter Start Date (dd/MM/yyyy)> ");
-        String start = sc.nextLine().trim();
-        Date dateStart = null;
-        if(null != start && start.trim().length() > 0){
+        //System.out.println("Enter Start Date (dd/MM/yyyy)> ");
+        //String start = sc.nextLine().trim();
+        Date dateStart = new Date();
+        
+        /*if(null != start && start.trim().length() > 0){
             try {
                 dateStart = format.parse(start);
             } catch (ParseException ex) {
                 System.out.println("Problems parsing the given date!");
             }
-        }
+        }*/
         System.out.println("Enter End Date (dd/MM/yyyy)> ");
         String end = sc.nextLine().trim();
         Date dateEnd = null;
@@ -177,17 +194,42 @@ public class FrontOfficeModule {
             Reservation newReservation = new Reservation();
             newReservation.setStartDate(dateStart);
             newReservation.setEndDate(dateEnd);
-            newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
+            newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(new BigDecimal(((dateEnd.getTime() - dateStart.getTime()) / (24*60*60*1000)))));
             try {
                 Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation, visitorId);
                 System.out.println("Can Reserve room!");
                 for (int i = 0; i < number; i++)
                 {
+                    //System.out.println(i + " number");
                     ReservationRoom reservationRoom = new ReservationRoom();
                     reservationRoom.setRoomType((RoomType)list.get(option - 1)[0]);
-                    frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , reservationId);
+                    //System.out.println(i + " number2");
+                    Long reservationRoomId = frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , reservationId);
+                    //System.out.println(reservationRoomId + "id");
+                    List<Object> result = adminSessionBeanRemote.searchRooms(dateStart, dateEnd,((RoomType)list.get(option - 1)[0]).getRoomTypeId() );
+                    //System.out.println(result);
+                    if(result.size() == 0) {
+                        result = adminSessionBeanRemote.searchRooms(dateStart, dateEnd,((RoomType)list.get(option - 1)[0]).getNextHigherRoomType());
+                          if(result.size() == 0){
+                              System.out.println("Both the current Room Type and Next Highest Room Type do not have available rooms for reservation!");
+                          } else {
+                              //adminSessionBeanRemote.setRoom(reservationRoom.getReservationRoomId(), roomSessionBeanRemote.viewRoomDetails((Long)result.get(0)).getRoomId());
+                              System.out.println("There are no more available rooms for the current Room Type but there are available rooms for the Next Highest Room Type!");
+                          }
+                        //
+                    } else {
+                        //System.out.println((Long)result.get(0) + " here");
+                        //System.out.println(reservationRoom.getReservationRoomId());
+                        adminSessionBeanRemote.setRoom(reservationRoomId, (Long)result.get(0));
+                        //System.out.println((Long)result.get(0) + " there");
+                        System.out.println("This will be the allocated room for this reservation: " + (Long)result.get(0) + " for Room Type " + ((RoomType)list.get(option - 1)[0]).getRoomTypeId());
+                        //
+                    }
                     
                 }
+                    
+               
+                
             } catch(ReservationExistException | ReservationRoomExistException ex) {
                 System.out.println("Reservation already exists!");
             } catch (UnknownPersistenceException ex) {
@@ -203,8 +245,9 @@ public class FrontOfficeModule {
         System.out.printf("%15s%30s%30s%30s\n", "Option", "Room Type", "Available Rooms", "Reservation Amount");
         List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(/*format.format(cal.getTime())*/ dateStart, dateEnd);
         int count = 1;
+        System.out.println(new BigDecimal((dateEnd.getTime() - dateEnd.getTime()) / (24*60*60*1000)));
         for(Object[] obj : list){
-            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], ((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight());
+            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], (((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight()).multiply(new BigDecimal((dateEnd.getTime() - dateStart.getTime()) / (24*60*60*1000))));
             count++;
         }
         System.out.println("end here");
@@ -230,6 +273,18 @@ public class FrontOfficeModule {
     }
     
     public void doCheckOutGuest() {
+        Scanner sc = new Scanner(System.in);
         System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Check Out Guest ***\n");
+        System.out.println("Enter Visitor Email > ");
+        String input = sc.nextLine().trim();
+        //System.out.println(input);
+        try {
+            
+            Visitor currentVisitor = visitorSessionBeanRemote.retrieveVisitorByEmail(input);
+            //System.out.println(currentVisitor.getVisitorId());
+            frontOfficeModuleSessionBeanRemote.removeGuest(currentVisitor.getVisitorId());
+        } catch(VisitorNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 }
