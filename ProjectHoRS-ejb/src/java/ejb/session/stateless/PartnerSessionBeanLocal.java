@@ -11,6 +11,7 @@ import javax.ejb.Local;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerExistException;
 import util.exception.PartnerNotFoundException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -26,4 +27,6 @@ public interface PartnerSessionBeanLocal {
     public Partner partnerLogin(String username, String password) throws InvalidLoginCredentialException;
 
     public Partner retrievePartnerByUsername(String username) throws PartnerNotFoundException;
+
+    public Long addReservation(Long partnerId, Long reservationId) throws PartnerNotFoundException, ReservationNotFoundException;
 }

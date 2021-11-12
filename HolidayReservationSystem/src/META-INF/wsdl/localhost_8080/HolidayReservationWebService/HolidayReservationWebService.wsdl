@@ -7,23 +7,35 @@
 <xsd:import namespace="http://jaxb.dev.java.net/array" schemaLocation="http://localhost:8080/HolidayReservationWebService/HolidayReservationWebService?xsd=2"/>
 </xsd:schema>
 </types>
-<message name="viewReservationDetails">
-<part name="parameters" element="tns:viewReservationDetails"/>
+<message name="reserveRoom">
+<part name="parameters" element="tns:reserveRoom"/>
 </message>
-<message name="viewReservationDetailsResponse">
-<part name="parameters" element="tns:viewReservationDetailsResponse"/>
+<message name="reserveRoomResponse">
+<part name="parameters" element="tns:reserveRoomResponse"/>
+</message>
+<message name="ParseException">
+<part name="fault" element="tns:ParseException"/>
+</message>
+<message name="ReservationExistException">
+<part name="fault" element="tns:ReservationExistException"/>
+</message>
+<message name="UnknownPersistenceException">
+<part name="fault" element="tns:UnknownPersistenceException"/>
+</message>
+<message name="ReservationRoomExistException">
+<part name="fault" element="tns:ReservationRoomExistException"/>
+</message>
+<message name="PartnerNotFoundException">
+<part name="fault" element="tns:PartnerNotFoundException"/>
 </message>
 <message name="ReservationNotFoundException">
 <part name="fault" element="tns:ReservationNotFoundException"/>
 </message>
-<message name="viewAllReservationsPartner">
-<part name="parameters" element="tns:viewAllReservationsPartner"/>
+<message name="searchRooms">
+<part name="parameters" element="tns:searchRooms"/>
 </message>
-<message name="viewAllReservationsPartnerResponse">
-<part name="parameters" element="tns:viewAllReservationsPartnerResponse"/>
-</message>
-<message name="PartnerNotFoundException">
-<part name="fault" element="tns:PartnerNotFoundException"/>
+<message name="searchRoomsResponse">
+<part name="parameters" element="tns:searchRoomsResponse"/>
 </message>
 <message name="partnerLogin">
 <part name="parameters" element="tns:partnerLogin"/>
@@ -34,20 +46,38 @@
 <message name="InvalidLoginCredentialException">
 <part name="fault" element="tns:InvalidLoginCredentialException"/>
 </message>
-<message name="searchRooms">
-<part name="parameters" element="tns:searchRooms"/>
+<message name="viewAllReservationsPartner">
+<part name="parameters" element="tns:viewAllReservationsPartner"/>
 </message>
-<message name="searchRoomsResponse">
-<part name="parameters" element="tns:searchRoomsResponse"/>
+<message name="viewAllReservationsPartnerResponse">
+<part name="parameters" element="tns:viewAllReservationsPartnerResponse"/>
 </message>
-<message name="ParseException">
-<part name="fault" element="tns:ParseException"/>
+<message name="viewReservationDetails">
+<part name="parameters" element="tns:viewReservationDetails"/>
+</message>
+<message name="viewReservationDetailsResponse">
+<part name="parameters" element="tns:viewReservationDetailsResponse"/>
 </message>
 <portType name="HolidayReservationWebService">
-<operation name="viewReservationDetails">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewReservationDetailsRequest" message="tns:viewReservationDetails"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewReservationDetailsResponse" message="tns:viewReservationDetailsResponse"/>
-<fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewReservationDetails/Fault/ReservationNotFoundException"/>
+<operation name="reserveRoom">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoomRequest" message="tns:reserveRoom"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoomResponse" message="tns:reserveRoomResponse"/>
+<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/ParseException"/>
+<fault message="tns:ReservationExistException" name="ReservationExistException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/ReservationExistException"/>
+<fault message="tns:UnknownPersistenceException" name="UnknownPersistenceException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/UnknownPersistenceException"/>
+<fault message="tns:ReservationRoomExistException" name="ReservationRoomExistException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/ReservationRoomExistException"/>
+<fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/PartnerNotFoundException"/>
+<fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/ReservationNotFoundException"/>
+</operation>
+<operation name="searchRooms">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRoomsRequest" message="tns:searchRooms"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRoomsResponse" message="tns:searchRoomsResponse"/>
+<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRooms/Fault/ParseException"/>
+</operation>
+<operation name="partnerLogin">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
+<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLogin/Fault/InvalidLoginCredentialException"/>
 </operation>
 <operation name="viewAllReservationsPartner">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewAllReservationsPartnerRequest" message="tns:viewAllReservationsPartner"/>
@@ -55,20 +85,15 @@
 <fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewAllReservationsPartner/Fault/PartnerNotFoundException"/>
 <fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewAllReservationsPartner/Fault/ReservationNotFoundException"/>
 </operation>
-<operation name="partnerLogin">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLoginRequest" message="tns:partnerLogin"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLoginResponse" message="tns:partnerLoginResponse"/>
-<fault message="tns:InvalidLoginCredentialException" name="InvalidLoginCredentialException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/partnerLogin/Fault/InvalidLoginCredentialException"/>
-</operation>
-<operation name="searchRooms">
-<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRoomsRequest" message="tns:searchRooms"/>
-<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRoomsResponse" message="tns:searchRoomsResponse"/>
-<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRooms/Fault/ParseException"/>
+<operation name="viewReservationDetails">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewReservationDetailsRequest" message="tns:viewReservationDetails"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewReservationDetailsResponse" message="tns:viewReservationDetailsResponse"/>
+<fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/viewReservationDetails/Fault/ReservationNotFoundException"/>
 </operation>
 </portType>
 <binding name="HolidayReservationWebServicePortBinding" type="tns:HolidayReservationWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="viewReservationDetails">
+<operation name="reserveRoom">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -76,8 +101,47 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="ParseException">
+<soap:fault name="ParseException" use="literal"/>
+</fault>
+<fault name="ReservationExistException">
+<soap:fault name="ReservationExistException" use="literal"/>
+</fault>
+<fault name="UnknownPersistenceException">
+<soap:fault name="UnknownPersistenceException" use="literal"/>
+</fault>
+<fault name="ReservationRoomExistException">
+<soap:fault name="ReservationRoomExistException" use="literal"/>
+</fault>
+<fault name="PartnerNotFoundException">
+<soap:fault name="PartnerNotFoundException" use="literal"/>
+</fault>
 <fault name="ReservationNotFoundException">
 <soap:fault name="ReservationNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="searchRooms">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="ParseException">
+<soap:fault name="ParseException" use="literal"/>
+</fault>
+</operation>
+<operation name="partnerLogin">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="InvalidLoginCredentialException">
+<soap:fault name="InvalidLoginCredentialException" use="literal"/>
 </fault>
 </operation>
 <operation name="viewAllReservationsPartner">
@@ -95,7 +159,7 @@
 <soap:fault name="ReservationNotFoundException" use="literal"/>
 </fault>
 </operation>
-<operation name="partnerLogin">
+<operation name="viewReservationDetails">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -103,20 +167,8 @@
 <output>
 <soap:body use="literal"/>
 </output>
-<fault name="InvalidLoginCredentialException">
-<soap:fault name="InvalidLoginCredentialException" use="literal"/>
-</fault>
-</operation>
-<operation name="searchRooms">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-<fault name="ParseException">
-<soap:fault name="ParseException" use="literal"/>
+<fault name="ReservationNotFoundException">
+<soap:fault name="ReservationNotFoundException" use="literal"/>
 </fault>
 </operation>
 </binding>

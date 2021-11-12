@@ -26,4 +26,5 @@ public interface PartnerSessionBeanRemote {
     public Partner partnerLogin(String username, String password) throws InvalidLoginCredentialException;
 
     public Partner retrievePartnerByUsername(String username) throws PartnerNotFoundException;
+    public Long addReservation(Long partnerId, Long reservationId) throws PartnerNotFoundException, ReservationNotFoundException;
 }

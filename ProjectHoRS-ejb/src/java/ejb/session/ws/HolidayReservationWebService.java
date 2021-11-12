@@ -8,6 +8,7 @@ package ejb.session.ws;
 import ejb.session.stateless.FrontOfficeModuleSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.ReservationSessionBeanLocal;
+import ejb.session.stateless.RoomRateSessionBeanLocal;
 import ejb.session.stateless.RoomSessionBeanLocal;
 import entity.Partner;
 import entity.Reservation;
@@ -15,6 +16,7 @@ import entity.ReservationRoom;
 import entity.Room;
 import entity.RoomRate;
 import entity.RoomType;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,7 +32,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerNotFoundException;
+import util.exception.ReservationExistException;
 import util.exception.ReservationNotFoundException;
+import util.exception.ReservationRoomExistException;
+import util.exception.UnknownPersistenceException;
 
 /**
  *
@@ -39,6 +44,12 @@ import util.exception.ReservationNotFoundException;
 @WebService(serviceName = "HolidayReservationWebService")
 @Stateless()
 public class HolidayReservationWebService {
+
+    @EJB
+    private FrontOfficeModuleSessionBeanLocal frontOfficeModuleSessionBeanLocal1;
+
+    @EJB
+    private RoomRateSessionBeanLocal roomRateSessionBeanLocal;
 
     @EJB
     private FrontOfficeModuleSessionBeanLocal frontOfficeModuleSessionBeanLocal;
@@ -143,6 +154,42 @@ public class HolidayReservationWebService {
         return reservation;
     }
     
+    @WebMethod(operationName = "reserveRoom")
+    public Reservation reserveRoom(@WebParam(name = "startDate") String startDate, @WebParam(name = "endDate") String endDate,
+            @WebParam(name = "noOfRooms") Integer number,@WebParam(name = "roomTypeId") Long roomTypeId,
+            @WebParam(name = "partnerId") Long partnerId) throws ParseException, ReservationExistException, UnknownPersistenceException, ReservationRoomExistException, PartnerNotFoundException, ReservationNotFoundException
+    {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy"); 
+
+        Date dateStart = format.parse(startDate);
+        Date dateEnd = format.parse(endDate);
  
+        Reservation newReservation = new Reservation();
+        newReservation.setStartDate(dateStart);
+        newReservation.setEndDate(dateEnd);
+
+        RoomType roomType = em.find(RoomType.class, roomTypeId);
+        BigDecimal fee = roomRateSessionBeanLocal.getFee(roomType.getRoomTypeId(), dateStart, dateEnd);
+        BigDecimal totalFee = fee.multiply(BigDecimal.valueOf(number));
+
+        newReservation.setFee(totalFee);  
+        Long reservationId = frontOfficeModuleSessionBeanLocal.createReservation(newReservation);
+        partnerSessionBeanLocal.addReservation(partnerId, reservationId);
+        System.out.println("Successful! Total Price: " + totalFee );
+        for (int i = 0; i < number; i++)
+        {
+            ReservationRoom reservationRoom = new ReservationRoom();
+            reservationRoom.setRoomType(roomType);
+            frontOfficeModuleSessionBeanLocal.reserveRoom(reservationRoom , reservationId);
+        }
+        
+        em.detach(newReservation);
+        
+        newReservation.setPartner(null);
+        newReservation.setReservationRooms(null);
+        
+        return newReservation;
+    }
+  
     
 }

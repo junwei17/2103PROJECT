@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Partner;
+import entity.Reservation;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import javax.persistence.Query;
 import util.exception.InvalidLoginCredentialException;
 import util.exception.PartnerExistException;
 import util.exception.PartnerNotFoundException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 
 /**
@@ -93,4 +95,24 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
                 
     }
 
+    @Override
+    public Long addReservation(Long partnerId, Long reservationId) throws PartnerNotFoundException, ReservationNotFoundException
+    {
+        Partner partner = em.find(Partner.class, partnerId);
+        Reservation reservation = em.find(Reservation.class, reservationId);
+
+        if (partner== null) 
+        {
+            throw new PartnerNotFoundException("Guest with id " + partnerId + "not found!");
+        } else if (reservation == null)
+        {
+            throw new ReservationNotFoundException("Reservation with id " + reservationId + "not found!");
+        } else
+        {
+            partner.getReservations().add(reservation);
+            reservation.setPartner(partner);
+        }
+
+        return partner.getPartnerId();
+    }
 }

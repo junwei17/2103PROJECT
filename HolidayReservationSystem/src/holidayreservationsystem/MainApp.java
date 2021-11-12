@@ -5,11 +5,16 @@
  */
 package holidayreservationsystem;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import static java.util.Collections.list;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ws.client.AnyTypeArray;
 import ws.client.HolidayReservationWebService_Service;
 import ws.client.InvalidLoginCredentialException;
@@ -18,8 +23,12 @@ import ws.client.ParseException_Exception;
 import ws.client.Partner;
 import ws.client.PartnerNotFoundException_Exception;
 import ws.client.Reservation;
+import ws.client.ReservationExistException_Exception;
 import ws.client.ReservationNotFoundException_Exception;
+import ws.client.ReservationRoom;
+import ws.client.ReservationRoomExistException_Exception;
 import ws.client.RoomType;
+import ws.client.UnknownPersistenceException_Exception;
 
 /**
  *
@@ -179,7 +188,7 @@ public class MainApp {
     
     private void doSearchRoom()
     {
-        System.out.println("*** HoRS Reservation Client :: View All My Reservations ***\n");
+        System.out.println("*** HoRS Reservation Client :: Search Rooms ***\n");
         Scanner sc = new Scanner(System.in);
         
         System.out.println("Enter Start Date (dd/MM/yyyy) >");
@@ -202,8 +211,61 @@ public class MainApp {
         {
             System.out.println("Error parsing dates!");
         }
+    }
+    
+    private void doReserveRoom() 
+    {
+        System.out.println("*** HoRS Reservation Client :: Reserve Rooms ***\n");
+        Scanner sc = new Scanner(System.in);
         
-      
+        System.out.println("Enter Start Date (dd/MM/yyyy) >");
+        String startDate = sc.nextLine().trim();
+        System.out.println("Enter End Date (dd/MM/yyyy) >");
+        String endDate = sc.nextLine().trim();
+        
+        try
+        {
+            List<AnyTypeArray> list = service.getHolidayReservationWebServicePort().searchRooms(startDate, endDate);
+            System.out.printf("%15s%30s%30s%30s\n", "Option", "Room Type", "Available Rooms", "Reservation Amount");
+            int count = 1;
+            for(AnyTypeArray item : list){
+                List<Object> obj = item.getItem();
+                System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj.get(0)).getName(), (Long)obj.get(1), ((RoomType)obj.get(0)).getRoomRates().get(0).getRatePerNight());
+                count++;
+            }
+            
+            
+
+            System.out.print("Enter an Option selection (as seen in the left column) > ");
+            int option = sc.nextInt();
+            System.out.println("Enter number of rooms required > ");
+            int number = sc.nextInt();
+            int counter = 0;
+            for(AnyTypeArray item : list){
+               counter++;
+               if (counter == option - 1)
+               {
+                   List<Object> obj = item.getItem();
+                   if ((Long)obj.get(1) < number)
+                   {
+                       System.out.println("Unable to make a reservation as the required room is over the number of available rooms!");
+                   } else
+                   {
+                       RoomType roomType = (RoomType)obj.get(0);
+                       Reservation newReservation = service.getHolidayReservationWebServicePort().reserveRoom(startDate, endDate, number,roomType.getRoomTypeId(),currentPartner.getPartnerId());
+                       System.out.println("Successful! Total price:" + newReservation.getFee());
+                   }
+                    
+               }
+               
+            }
+        } catch (ParseException_Exception ex)
+        {
+            System.out.println("Error parsing dates!");
+        } catch (PartnerNotFoundException_Exception | ReservationExistException_Exception | ReservationNotFoundException_Exception | ReservationRoomExistException_Exception | UnknownPersistenceException_Exception ex)
+        {
+            System.out.println("Error with reserving room!" + ex.getMessage());
+        }
     }
     
 }
