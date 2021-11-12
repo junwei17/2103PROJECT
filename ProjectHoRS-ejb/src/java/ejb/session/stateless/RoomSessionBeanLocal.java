@@ -31,4 +31,5 @@ public interface RoomSessionBeanLocal {
     public void updateRoom(Room room) throws RoomNotFoundException, UpdateRoomException;
 
     public Room viewRoomDetails(Long roomId) throws RoomNotFoundException;
+
 }

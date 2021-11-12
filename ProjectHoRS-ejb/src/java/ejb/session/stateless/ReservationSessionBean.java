@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.Partner;
 import entity.Reservation;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -15,6 +16,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.GuestNotFoundException;
+import util.exception.PartnerNotFoundException;
 import util.exception.ReservationNotFoundException;
 import util.exception.RoomTypeNotFoundException;
 
@@ -58,6 +60,25 @@ public class ReservationSessionBean implements ReservationSessionBeanRemote, Res
         else
         {
             return guest.getReservations();
+        }
+    }
+    
+    @Override
+    public List<Reservation> viewAllReservationsPartner(Long partnerId) throws PartnerNotFoundException, ReservationNotFoundException
+    {
+        Partner partner = em.find(Partner.class, partnerId);
+        if (partner == null) 
+        {
+            throw new PartnerNotFoundException("Guest not found!");
+        }
+        
+        if(partner.getReservations().isEmpty())
+        {
+            throw new ReservationNotFoundException("No Reservation Found!"); 
+        }
+        else
+        {
+            return partner.getReservations();
         }
     }
     

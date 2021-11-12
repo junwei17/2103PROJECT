@@ -198,7 +198,7 @@ public class SystemAdministrationModule {
                 System.out.println("result here is " + result);
                 try {
                 if(result.size() == 0) {
-                    result = adminSessionBeanRemote.searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getRoomTypeId() + 1);
+                    result = adminSessionBeanRemote.searchRooms((Date)obj[0], (Date)obj[1], ((ReservationRoom)obj[2]).getRoomType().getNextHigherRoomType());
                     
                     System.out.println("result there is " + result);
                     if(result.size() == 0){

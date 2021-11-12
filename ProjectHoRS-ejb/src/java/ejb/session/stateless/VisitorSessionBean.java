@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.Guest;
+import entity.Reservation;
 import entity.Visitor;
 import java.util.Set;
 import javax.ejb.Stateless;
@@ -23,6 +24,7 @@ import util.exception.GuestExistException;
 import util.exception.GuestNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.VisitorNotFoundException;
 
@@ -112,39 +114,60 @@ public class VisitorSessionBean implements VisitorSessionBeanRemote, VisitorSess
         }
     }
         
-        @Override
-        public Long createVisitor(Visitor newVisitor) throws UnknownPersistenceException {
-        
+    @Override
+    public Long createVisitor(Visitor newVisitor) throws UnknownPersistenceException {
+
+    try
+    {
+        entityManager.persist(newVisitor);
+        entityManager.flush();
+
+        return newVisitor.getVisitorId();
+    }
+    catch(PersistenceException ex)
+    {
+        throw new UnknownPersistenceException(ex.getMessage());
+    }
+
+
+}
+
+    @Override
+    public Visitor retrieveVisitorByEmail(String email) throws VisitorNotFoundException
+    {
+        Query query = entityManager.createQuery("SELECT v FROM Visitor v WHERE v.email = :inEmail");
+        query.setParameter("inEmail", email);
+
         try
         {
-            entityManager.persist(newVisitor);
-            entityManager.flush();
-
-            return newVisitor.getVisitorId();
+           return (Visitor)query.getSingleResult();
         }
-        catch(PersistenceException ex)
+        catch(NoResultException | NonUniqueResultException ex)
         {
-            throw new UnknownPersistenceException(ex.getMessage());
+            throw new VisitorNotFoundException("Reservation for visitor with email " + email + " does not exist!");
         }
-        
-        
     }
-        
-        @Override
-        public Visitor retrieveVisitorByEmail(String email) throws VisitorNotFoundException
+
+    @Override
+    public Long addReservation(Long guestId, Long reservationId) throws GuestNotFoundException, ReservationNotFoundException
+    {
+        Guest guest = entityManager.find(Guest.class, guestId);
+        Reservation reservation = entityManager.find(Reservation.class, reservationId);
+
+        if (guest== null) 
         {
-            Query query = entityManager.createQuery("SELECT v FROM Visitor v WHERE v.email = :inEmail");
-            query.setParameter("inEmail", email);
-            
-            try
-            {
-               return (Visitor)query.getSingleResult();
-            }
-            catch(NoResultException | NonUniqueResultException ex)
-            {
-                throw new VisitorNotFoundException("Reservation for visitor with email " + email + " does not exist!");
-            }
+            throw new GuestNotFoundException("Guest with id " + guestId + "not found!");
+        } else if (reservation == null)
+        {
+            throw new ReservationNotFoundException("Reservation with id " + reservationId + "not found!");
+        } else
+        {
+            guest.getReservations().add(reservation);
+            reservation.setGuest(guest);
         }
+
+        return guest.getVisitorId();
+    }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 }

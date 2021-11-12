@@ -28,12 +28,8 @@ public class Partner implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long partnerId;
     @Column(nullable = false, unique = true, length = 32)
-    @NotNull
-    @Size(min = 1, max = 32)
     private String username;
     @Column(nullable = false, length = 32)
-    @NotNull
-    @Size(min = 8, max = 32)
     private String password;
     
     @OneToMany

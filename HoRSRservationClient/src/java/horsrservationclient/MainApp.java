@@ -63,9 +63,6 @@ public class MainApp {
             response = 0;
             System.out.println("1: Login");
             System.out.println("2. Register as Guest");
-            if(currentGuest != null) {
-                System.out.println("2: Logout");
-            }
             System.out.println("3: Search Rooms");
             System.out.println("4: Exit");
             while (response < 1 || response > 4) {
@@ -86,7 +83,7 @@ public class MainApp {
                     doRegisterAsGuest();
                 } else if(response == 3){
                     doSearchRoom();
-                } else if(response == 4) {
+                } else if (response == 4) {
                     break;
                 }
                 else {
@@ -168,31 +165,36 @@ public class MainApp {
         {
             System.out.println("*** HoRS Reservation Client***\n");
             System.out.println("You are login as " + currentGuest.getFirstName() + " " + currentGuest.getLastName() + ".\n");
-            System.out.println("1: Reserve Hotel Room");
-            System.out.println("2: View My Reservation Details");
-            System.out.println("3: View All My Reservation Details");
-            System.out.println("4: Logout");
+            System.out.println("1: Search Hotel Room");
+            System.out.println("2: Reserve Hotel Room");
+            System.out.println("3: View My Reservation Details");
+            System.out.println("4: View All My Reservation Details");
+            System.out.println("5: Logout\n");
             response = 0;
             
-            while(response < 1 || response > 4)
+            while(response < 1 || response > 5)
             {
                 System.out.print("> ");
 
                 response = scanner.nextInt();
 
-                if(response == 1)
+                if (response == 1)
                 {
-                    doReserveRoom();
+                    doSearchRoom();
                 }
                 else if(response == 2)
                 {
+                    doReserveRoom();
+                }
+                else if(response == 3)
+                {
                     doViewReservationDetails();
                 }
-                else if (response == 3)
+                else if (response == 4)
                 {
                     doViewAllReservations();
                 }
-                else if (response == 4)
+                else if (response == 5)
                 {
                     break;
                 }
@@ -202,7 +204,7 @@ public class MainApp {
                         }
             }
             
-            if(response == 4)
+            if(response == 5)
             {
                 break;
             }
@@ -281,9 +283,10 @@ public class MainApp {
             Reservation newReservation = new Reservation();
             newReservation.setStartDate(dateStart);
             newReservation.setEndDate(dateEnd);
-            newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
+            newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));  
             try {
                 Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
+                visitorSessionBeanRemote.addReservation(currentGuest.getVisitorId(), reservationId);
                 System.out.println("Can Create room!");
                 for (int i = 0; i < number; i++)
                 {
@@ -292,7 +295,7 @@ public class MainApp {
                     frontOfficeModuleSessionBeanRemote.reserveRoom(reservationRoom , reservationId);
                     
                 }
-            } catch(ReservationExistException | ReservationRoomExistException ex) {
+            } catch(ReservationExistException | ReservationRoomExistException | GuestNotFoundException | ReservationNotFoundException ex) {
                 System.out.println("Reservation already exists!");
             } catch (UnknownPersistenceException ex) {
                 System.out.println("Unknown error!");
@@ -316,12 +319,13 @@ public class MainApp {
         System.out.println("*** HoRS Reservation Client :: View Reservation Details ***\n");
         System.out.println("Reservation ID > ");
         Long reservationId = sc.nextLong();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
         try
         {
         
             Reservation reservation = reservationSessionBeanRemote.viewReservationDetails(reservationId);
-            System.out.printf("%8s%15s%20s%20s%20s%20s\n", "ReservationID", "StartDate", "EndDate", "fee");
-            System.out.printf("%8s%20s%20s%20s\n", reservation.getReservationId(), reservation.getStartDate(), reservation.getEndDate(), reservation.getFee());
+            System.out.printf("%8s%15s%20s%20s\n", "ReservationID", "StartDate", "EndDate", "fee");
+            System.out.printf("%8s%20s%20s%20s\n", reservation.getReservationId(), format.format(reservation.getStartDate()), format.format(reservation.getEndDate()), reservation.getFee());
         } catch (ReservationNotFoundException ex)
         {
             System.out.println("No Reservation Found!");
@@ -331,13 +335,14 @@ public class MainApp {
     private void doViewAllReservations() 
     {
         System.out.println("*** HoRS Reservation Client :: View All My Reservations ***\n");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
         try
         {
             List<Reservation> reservations = reservationSessionBeanRemote.viewAllReservations(currentGuest.getVisitorId());
-            System.out.printf("%8s%15s%20s%20s%20s%20s\n", "ReservationID", "StartDate", "EndDate", "fee");
+            System.out.printf("%8s%15s%20s%20s\n", "ReservationID", "StartDate", "EndDate", "fee");
             for (Reservation reservation : reservations)
             {
-                System.out.printf("%8s%20s%20s%20s\n", reservation.getReservationId(), reservation.getStartDate(), reservation.getEndDate(), reservation.getFee());
+                System.out.printf("%8s%20s%20s%20s\n", reservation.getReservationId(), format.format(reservation.getStartDate()), format.format(reservation.getEndDate()), reservation.getFee());
             }
         }
         catch(GuestNotFoundException | ReservationNotFoundException ex)

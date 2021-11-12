@@ -9,6 +9,7 @@ import entity.Reservation;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.GuestNotFoundException;
+import util.exception.PartnerNotFoundException;
 import util.exception.ReservationNotFoundException;
 
 /**
@@ -21,5 +22,7 @@ public interface ReservationSessionBeanLocal {
     public List<Reservation> viewAllReservations(Long guestId) throws GuestNotFoundException, ReservationNotFoundException;
 
     public Reservation viewReservationDetails(Long reservationId) throws ReservationNotFoundException;
+
+    public List<Reservation> viewAllReservationsPartner(Long partnerId) throws PartnerNotFoundException, ReservationNotFoundException;
     
 }

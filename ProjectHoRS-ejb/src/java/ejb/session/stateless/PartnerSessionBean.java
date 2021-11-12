@@ -57,11 +57,11 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
     
     public Partner retrievePartnerByUsername(String username) throws PartnerNotFoundException
     {
-        Query query = em.createQuery("SELECT p FROM Partner p WHERE p.username = :inUsername");
-        query.setParameter(":inUsername", username);
-        
         try
         {
+            Query query = em.createQuery("SELECT p FROM Partner p WHERE p.username = :inUsername");
+            query.setParameter("inUsername", username);
+        
             return (Partner)query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException ex)
         {
@@ -69,6 +69,7 @@ public class PartnerSessionBean implements PartnerSessionBeanRemote, PartnerSess
         }
     }
     
+    @Override
     public Partner partnerLogin(String username, String password) throws InvalidLoginCredentialException
     {
         try

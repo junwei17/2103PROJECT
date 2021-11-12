@@ -12,6 +12,7 @@ import util.exception.GuestExistException;
 import util.exception.GuestNotFoundException;
 import util.exception.InputDataValidationException;
 import util.exception.InvalidLoginCredentialException;
+import util.exception.ReservationNotFoundException;
 import util.exception.UnknownPersistenceException;
 import util.exception.VisitorNotFoundException;
 
@@ -31,5 +32,7 @@ public interface VisitorSessionBeanLocal {
     public Visitor retrieveVisitorByEmail(String email) throws VisitorNotFoundException;
 
     public Long createVisitor(Visitor newVisitor) throws UnknownPersistenceException;
+
+    public Long addReservation(Long guestId, Long reservationId) throws GuestNotFoundException, ReservationNotFoundException;
     
 }

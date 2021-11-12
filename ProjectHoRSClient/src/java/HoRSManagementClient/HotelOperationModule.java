@@ -176,13 +176,24 @@ public class HotelOperationModule {
                 System.out.println("Invalid Option! Please try again!");
             }
         }
+        System.out.println("Enter Higher Room Type name> ");
+        String nextHigherRoomTypeName = sc.nextLine().trim();
+
         try {
+            if (!nextHigherRoomTypeName.equals("null"))
+            {
+                RoomType nextHigherRoomType = roomTypeSessionBeanRemote.retreieveRoomTypeByName(nextHigherRoomTypeName);
+                newRoomType.setNextHigherRoomType(nextHigherRoomType.getRoomTypeId());
+            }
             Long newRoomTypeId = roomTypeSessionBeanRemote.createRoomType(newRoomType);
             System.out.println("New Room Type " + newRoomTypeId + " is created!");
         } catch(UnknownPersistenceException ex) {
             System.out.println("An unknown error has occured while creating the room type!: " + ex.getMessage() + "\n");
         } catch(RoomExistException ex) {
             System.out.println("An error has occured while creating the new Room Type!: The Room Type already exists!\n");
+        } catch (RoomTypeNotFoundException ex)
+        {
+            System.out.println("An error has occured while creating the new Room Type!: Room Type doesn't exist!\n");
         }
     }
     

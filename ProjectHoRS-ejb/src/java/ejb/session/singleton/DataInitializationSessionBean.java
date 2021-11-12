@@ -89,10 +89,10 @@ public class DataInitializationSessionBean {
             employeeSessionBeanLocal.createNewEmployee(new Employee("salesmanager", "password", AccessRightEnum.SALES_MANAGER));
             employeeSessionBeanLocal.createNewEmployee(new Employee("guestrelo", "password", AccessRightEnum.GUEST_RELATION_OFFICER));
             
-            roomTypeSessionBeanLocal.createRoomType(new RoomType("Deluxe Room"));
-            roomTypeSessionBeanLocal.createRoomType(new RoomType("Premier Room"));
-            roomTypeSessionBeanLocal.createRoomType(new RoomType("Family Room"));
-            roomTypeSessionBeanLocal.createRoomType(new RoomType("Junior Suite"));
+            roomTypeSessionBeanLocal.createRoomType(new RoomType("Deluxe Room", new Long(2)));
+            roomTypeSessionBeanLocal.createRoomType(new RoomType("Premier Room", new Long(3)));
+            roomTypeSessionBeanLocal.createRoomType(new RoomType("Family Room", new Long(4)));
+            roomTypeSessionBeanLocal.createRoomType(new RoomType("Junior Suite", new Long(5)));
             roomTypeSessionBeanLocal.createRoomType(new RoomType("Grand Suite"));
            
             

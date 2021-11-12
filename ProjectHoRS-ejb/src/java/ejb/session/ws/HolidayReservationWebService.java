@@ -5,12 +5,20 @@
  */
 package ejb.session.ws;
 
+import ejb.session.stateless.FrontOfficeModuleSessionBeanLocal;
 import ejb.session.stateless.PartnerSessionBeanLocal;
 import ejb.session.stateless.ReservationSessionBeanLocal;
 import ejb.session.stateless.RoomSessionBeanLocal;
 import entity.Partner;
 import entity.Reservation;
+import entity.ReservationRoom;
+import entity.RoomType;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -31,6 +39,9 @@ import util.exception.ReservationNotFoundException;
 public class HolidayReservationWebService {
 
     @EJB
+    private FrontOfficeModuleSessionBeanLocal frontOfficeModuleSessionBeanLocal;
+
+    @EJB
     private ReservationSessionBeanLocal reservationSessionBeanLocal;
 
     @EJB
@@ -49,15 +60,21 @@ public class HolidayReservationWebService {
      * This is a sample web service operation
      */
     @WebMethod(operationName = "searchRooms")
-    public List<Object[]> searchRooms(@WebParam(name = "n") String txt) {
-        return null;
+    public List<Object[]> searchRooms(@WebParam(name = "startDate") String startDate, @WebParam(name = "endDate") String endDate) throws ParseException{
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy"); 
+
+            Date dateStart = format.parse(startDate);
+            Date dateEnd = format.parse(endDate);
+        
+        return frontOfficeModuleSessionBeanLocal.searchRooms(dateStart, dateEnd);
     }
     
     @WebMethod(operationName = "partnerLogin")
     public Partner partnerLogin(@WebParam(name = "username") String username, @WebParam(name = "password") String password) throws InvalidLoginCredentialException {
 
+        System.out.println("hi");
         Partner partner = partnerSessionBeanLocal.partnerLogin(username, password);
-
+        partner.getReservations().size();
 
         em.detach(partner);
 
@@ -66,32 +83,45 @@ public class HolidayReservationWebService {
             em.detach(r);
             r.setPartner(null);
         }
+        System.out.println("bye");
         return partner;
     }
     
-    @WebMethod(operationName = "viewAllReservations")
-    public List<Reservation> viewAllReservations(@WebParam(name = "partnerId") Long partnerId)  {
+    @WebMethod(operationName = "viewAllReservationsPartner")
+    public List<Reservation> viewAllReservationsPartner(@WebParam(name = "partnerId") Long partnerId) throws PartnerNotFoundException, ReservationNotFoundException {
 
-        Partner partner = em.find(Partner.class, partnerId);
+        List<Reservation> reservations = reservationSessionBeanLocal.viewAllReservationsPartner(partnerId);
 
-        em.detach(partner);
-
-        for(Reservation r : partner.getReservations())
+        for(Reservation r : reservations)
         {
             em.detach(r);
             r.setPartner(null);
+            r.setReservationRooms(null);
+            r.setGuest(null);
         }
         
         
-        return partner.getReservations();
+        return reservations;
     }
     
     @WebMethod(operationName = "viewReservationDetails")
     public Reservation viewReservationDetails(@WebParam(name = "reservationId") Long reservationId) throws ReservationNotFoundException {
 
-        return reservationSessionBeanLocal.viewReservationDetails(reservationId);
+        Reservation reservation = reservationSessionBeanLocal.viewReservationDetails(reservationId);
+        
+        em.detach(reservation);
+        
+        reservation.setPartner(null);
+        reservation.setGuest(null);
+        for(ReservationRoom rr : reservation.getReservationRooms())
+        {
+            em.detach(rr);
+            rr.setReservation(null);
+        }
+        
+        return reservation;
     }
     
-    
+ 
     
 }

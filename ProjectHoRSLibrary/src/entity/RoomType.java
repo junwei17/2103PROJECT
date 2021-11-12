@@ -34,6 +34,7 @@ public class RoomType implements Serializable {
     private Integer size;
     private Integer capacity;
     private AmenitiesEnum amenitiesEnum;
+    private Long nextHigherRoomType;
     
     @OneToMany(mappedBy ="roomType")
     private List<Room> rooms;
@@ -49,6 +50,13 @@ public class RoomType implements Serializable {
         this();
         this.name = name;
     }
+
+    public RoomType(String name, Long nextHigherRoomType) {
+        this();
+        this.name = name;
+        this.nextHigherRoomType = nextHigherRoomType;
+    }
+    
     
     
 
@@ -201,6 +209,20 @@ public class RoomType implements Serializable {
      */
     public void setRoomRates(List<RoomRate> roomRates) {
         this.roomRates = roomRates;
+    }
+
+    /**
+     * @return the nextHigherRoomType
+     */
+    public Long getNextHigherRoomType() {
+        return nextHigherRoomType;
+    }
+
+    /**
+     * @param nextHigherRoomType the nextHigherRoomType to set
+     */
+    public void setNextHigherRoomType(Long nextHigherRoomType) {
+        this.nextHigherRoomType = nextHigherRoomType;
     }
 
     
