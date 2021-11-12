@@ -6,10 +6,12 @@
 package HoRSManagementClient;
 
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
+import ejb.session.stateless.VisitorSessionBeanRemote;
 import entity.Employee;
 import entity.Reservation;
 import entity.ReservationRoom;
 import entity.RoomType;
+import entity.Visitor;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +24,7 @@ import util.exception.InvalidAccessRightException;
 import util.exception.ReservationExistException;
 import util.exception.ReservationRoomExistException;
 import util.exception.UnknownPersistenceException;
+import util.exception.VisitorNotFoundException;
 
 /**
  *
@@ -30,13 +33,15 @@ import util.exception.UnknownPersistenceException;
 public class FrontOfficeModule {
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
     private Employee currentEmployee;
+    private VisitorSessionBeanRemote visitorSessionBeanRemote;
     
     public FrontOfficeModule() {
     }
 
-    public FrontOfficeModule(FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, Employee currentEmployee) {
+    public FrontOfficeModule(FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, Employee currentEmployee, VisitorSessionBeanRemote visitorSessionBeanRemote) {
         this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
         this.currentEmployee = currentEmployee;
+        this.visitorSessionBeanRemote = visitorSessionBeanRemote;
     }
     
     public void menuFrontOffice() throws InvalidAccessRightException {
@@ -81,7 +86,7 @@ public class FrontOfficeModule {
         Scanner sc = new Scanner(System.in);
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println("Start here");
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Search Room ***\n");
         System.out.println("Enter Start Date (dd/MM/yyyy)> ");
             String start = sc.nextLine().trim();
                 Date dateStart = null;
@@ -115,9 +120,30 @@ public class FrontOfficeModule {
     }
     
     public void doReserveRoom() {
+        String input = "";
         Scanner sc = new Scanner(System.in);
         //Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Reserve Room ***\n");
+        System.out.println("Visitor Details \n");
+        Visitor visitor = new Visitor();
+        System.out.println("Enter Visitor Address > ");
+        input = sc.nextLine().trim();
+        visitor.setAddress(input);
+        System.out.println("Enter Visitor Email > ");
+        input = sc.nextLine().trim();
+        visitor.setEmail(input);
+        System.out.println("Enter Visitor First Name > ");
+        input = sc.nextLine().trim();
+        visitor.setFirstName(input);
+        System.out.println("Enter Visitor Last Name > ");
+        input = sc.nextLine().trim();
+        visitor.setLastName(input);
+        try {
+            visitorSessionBeanRemote.createVisitor(visitor);
+        } catch (UnknownPersistenceException ex) {
+            System.out.println("Unknown Error!");
+        }
         System.out.println("Enter Start Date (dd/MM/yyyy)> ");
         String start = sc.nextLine().trim();
         Date dateStart = null;
@@ -151,7 +177,7 @@ public class FrontOfficeModule {
             newReservation.setEndDate(dateEnd);
             newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));
             try {
-                Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
+                Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation, visitor.getVisitorId());
                 System.out.println("Can Create room!");
                 for (int i = 0; i < number; i++)
                 {
@@ -181,9 +207,24 @@ public class FrontOfficeModule {
     }
     
     public void doCheckInGuest() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Check In Guest ***\n");
+        System.out.println("Enter Visitor Email > ");
+        String input = sc.nextLine().trim();
+        try {
+            Visitor currentVisitor = visitorSessionBeanRemote.retrieveVisitorByEmail(input);
+            System.out.printf("%15s%30s%30s%30s\n", "Reservation ID", "Reservation Room ID", "RoomType", "Room");
+            List<ReservationRoom> list = frontOfficeModuleSessionBeanRemote.allocatedRooms(currentVisitor.getVisitorId());
+            for(ReservationRoom reservationRoom : list){
+                System.out.printf("%15s%30s%30s%30s\n", reservationRoom.getReservation().getReservationId(), reservationRoom.getReservationRoomId(), reservationRoom.getRoom().getRoomType().getRoomTypeId(), reservationRoom.getRoom().getRoomNo());
+            }
+        } catch(VisitorNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
         
     }
     
     public void doCheckOutGuest() {
+        System.out.println("*** Welcome to Hotel Reservation System (v1.0) :: Front Office :: Check Out Guest ***\n");
     }
 }

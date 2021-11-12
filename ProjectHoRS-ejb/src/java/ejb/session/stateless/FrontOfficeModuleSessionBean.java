@@ -9,6 +9,7 @@ import entity.Reservation;
 import entity.ReservationRoom;
 import entity.Room;
 import entity.RoomType;
+import entity.Visitor;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -39,8 +40,17 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
     }
     
     @Override
-    public Long createReservation(Reservation newReservation) throws ReservationExistException, UnknownPersistenceException{
+    public List<ReservationRoom> allocatedRooms(Long visitorId) {
+        Query query = em.createQuery("SELECT rr FROM ReservationRoom rr WHERE rr.reservation.visitor.visitorId = :inVisitorId");
+        query.setParameter("inVisitorId", visitorId);
+        return query.getResultList();
+    }
+    
+    @Override
+    public Long createReservation(Reservation newReservation, Long visitorId) throws ReservationExistException, UnknownPersistenceException{
          try {
+            Visitor visitor = em.find(Visitor.class, visitorId);
+            newReservation.setVisitor(visitor);
             em.persist(newReservation);
             em.flush();
         
@@ -67,6 +77,34 @@ public class FrontOfficeModuleSessionBean implements FrontOfficeModuleSessionBea
     }
       
         
+    @Override
+    public Long createReservation(Reservation newReservation) throws ReservationExistException, UnknownPersistenceException{
+         try {
+            em.persist(newReservation);
+            em.flush();
+        
+            return newReservation.getReservationId();
+        } catch (PersistenceException ex) {
+            if(ex.getCause() != null && ex.getCause().getClass().getName().equals("org.eclipse.persistence.exceptions.DatabaseException"))
+            {
+                if(ex.getCause().getCause() != null && ex.getCause().getCause().getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException"))
+                {
+                    throw new ReservationExistException();
+                }
+                else
+                {
+                    throw new UnknownPersistenceException(ex.getMessage());
+                }
+            }
+            else
+            {
+                throw new UnknownPersistenceException(ex.getMessage());
+            }
+        }
+        
+    
+    }
+    
     @Override
     public Long reserveRoom(ReservationRoom newReservationRoom , Long reservationId) throws ReservationRoomExistException, UnknownPersistenceException{
          try {

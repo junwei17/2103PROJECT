@@ -14,6 +14,7 @@ import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import ejb.session.stateless.VisitorSessionBeanRemote;
 import javax.ejb.EJB;
 
 /**
@@ -38,9 +39,11 @@ public class Main {
     private static AdminSessionBeanRemote adminSessionBeanRemote;
     @EJB
     private static ExceptionReportRemote exceptionReportRemote;
+    @EJB
+    private static VisitorSessionBeanRemote visitorSessionBeanRemote;
     
     public static void main(String[] args) {
-         MainApp mainApp = new MainApp(adminSessionBeanRemote, employeeSessionBeanRemote, partnerSessionBeanRemote, roomTypeSessionBeanRemote, roomSessionBeanRemote, roomRateSessionBeanRemote, frontOfficeModuleSessionBeanRemote, exceptionReportRemote);
+         MainApp mainApp = new MainApp(adminSessionBeanRemote, employeeSessionBeanRemote, partnerSessionBeanRemote, roomTypeSessionBeanRemote, roomSessionBeanRemote, roomRateSessionBeanRemote, frontOfficeModuleSessionBeanRemote, exceptionReportRemote, visitorSessionBeanRemote);
          mainApp.runApp();
     }
     

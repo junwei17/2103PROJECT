@@ -328,7 +328,7 @@ public class HotelOperationModule {
             System.out.println("An error has occured while retrieving the Room Type: " + ex.getMessage() + "\n");
         }
         System.out.println("Enter New Room Number> ");
-        newRoom.setRoomNo(sc.nextInt());
+        newRoom.setRoomNo(sc.nextLine().trim());
         System.out.println("the room now is " + newRoom.getRoomId() + " " + newRoom.getRoomNo() + " " + newRoom.getStatus());
         try {
             Long newRoomId = roomSessionBeanRemote.createRoom(newRoom,roomTypeId);
@@ -399,9 +399,9 @@ public class HotelOperationModule {
         }
         
         System.out.println("Enter Room Number(Enter -1 if no change)> ");
-        numberInput = sc.nextInt();
-        if(numberInput != -1) {
-            room.setRoomNo(numberInput);
+        input = sc.nextLine().trim();
+        if(input.length() != 0) {
+            room.setRoomNo(input);
         }
         try {
             roomSessionBeanRemote.updateRoom(room);

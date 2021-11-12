@@ -34,7 +34,7 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
     @Column(nullable = false, length = 4)
-    private Integer roomNo;
+    private String roomNo;
     //private Integer sequenceNo;
     @Column(nullable = false)
     private boolean status;
@@ -44,11 +44,10 @@ public class Room implements Serializable {
     private List<Reservation> reservations;*/
      
     //@OneToOne
-    public Room(Integer roomNo, boolean status, RoomType roomType) {
+    public Room(String roomNo, boolean status) {
         this();
         this.roomNo = roomNo;
         this.status = status;
-        this.roomType = roomType;
     }
     //private RoomRate roomType;
     
@@ -99,14 +98,14 @@ public class Room implements Serializable {
     /**
      * @return the roomNo
      */
-    public Integer getRoomNo() {
+    public String getRoomNo() {
         return roomNo;
     }
 
     /**
      * @param roomNo the roomNo to set
      */
-    public void setRoomNo(Integer roomNo) {
+    public void setRoomNo(String roomNo) {
         this.roomNo = roomNo;
     }
 

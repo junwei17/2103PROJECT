@@ -13,6 +13,7 @@ import ejb.session.stateless.PartnerSessionBeanRemote;
 import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.RoomTypeSessionBeanRemote;
+import ejb.session.stateless.VisitorSessionBeanRemote;
 import entity.Employee;
 import java.util.Scanner;
 import util.exception.InvalidAccessRightException;
@@ -36,11 +37,12 @@ public class MainApp {
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
     private AdminSessionBeanRemote adminSessionBeanRemote;
     private ExceptionReportRemote exceptionReportRemote;
+    private VisitorSessionBeanRemote visitorSessionBeanRemote;
             
     public MainApp() {
     }
     
-    public MainApp(AdminSessionBeanRemote adminSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, ExceptionReportRemote exceptionReportRemote) {
+    public MainApp(AdminSessionBeanRemote adminSessionBeanRemote, EmployeeSessionBeanRemote employeeSessionBeanRemote, PartnerSessionBeanRemote partnerSessionBeanRemote, RoomTypeSessionBeanRemote roomTypeSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, ExceptionReportRemote exceptionReportRemote, VisitorSessionBeanRemote visitorSessionBeanRemote) {
         this.adminSessionBeanRemote = adminSessionBeanRemote;
         this.employeeSessionBeanRemote = employeeSessionBeanRemote;
         this.partnerSessionBeanRemote = partnerSessionBeanRemote;
@@ -49,6 +51,7 @@ public class MainApp {
         this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
         this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
         this.exceptionReportRemote = exceptionReportRemote;
+        this.visitorSessionBeanRemote = visitorSessionBeanRemote;
         
     }
     
@@ -75,7 +78,7 @@ public class MainApp {
                         System.out.println("Welcome, " + currentEmployee.getEmployeeUsername() + "!\n");
                         systemAdministrationModule = new SystemAdministrationModule(employeeSessionBeanRemote, currentEmployee, partnerSessionBeanRemote, adminSessionBeanRemote, roomSessionBeanRemote, exceptionReportRemote);
                         hotelOperationModule = new HotelOperationModule(roomTypeSessionBeanRemote, roomSessionBeanRemote, currentEmployee, roomRateSessionBeanRemote, exceptionReportRemote);
-                        frontOfficeModule = new FrontOfficeModule(frontOfficeModuleSessionBeanRemote, currentEmployee);
+                        frontOfficeModule = new FrontOfficeModule(frontOfficeModuleSessionBeanRemote, currentEmployee, visitorSessionBeanRemote);
                         menuMain();
                     } catch(InvalidLoginCredentialException ex) {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");

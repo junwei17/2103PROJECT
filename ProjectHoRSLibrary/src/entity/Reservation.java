@@ -56,6 +56,9 @@ public class Reservation implements Serializable {
     private List<ReservationRoom> reservationRooms;
     
     @ManyToOne
+    private Visitor visitor;
+    
+    @ManyToOne
     private Guest guest;
     
     @ManyToOne
@@ -169,15 +172,15 @@ public class Reservation implements Serializable {
     /**
      * @return the guest
      */
-    public Guest getGuest() {
-        return guest;
+    public Visitor getVisitor() {
+        return visitor;
     }
 
     /**
      * @param guest the guest to set
      */
-    public void setGuest(Guest guest) {
-        this.guest = guest;
+    public void setVisitor(Visitor visitor) {
+        this.visitor = visitor;
     }
 
     /**
@@ -192,6 +195,20 @@ public class Reservation implements Serializable {
      */
     public void setPartner(Partner partner) {
         this.partner = partner;
+    }
+
+    /**
+     * @return the guest
+     */
+    public Guest getGuest() {
+        return guest;
+    }
+
+    /**
+     * @param guest the guest to set
+     */
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
   

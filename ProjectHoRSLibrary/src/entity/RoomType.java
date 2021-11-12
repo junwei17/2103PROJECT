@@ -49,6 +49,8 @@ public class RoomType implements Serializable {
         this();
         this.name = name;
     }
+    
+    
 
     public RoomType() {
         this.rooms = new ArrayList<>();

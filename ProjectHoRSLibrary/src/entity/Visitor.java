@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -36,8 +38,11 @@ public class Visitor implements Serializable {
     private String email;
     @Column(nullable = false, length = 64)
     private String address;
+    
+    private Reservation reservation;
 
     public Visitor() {
+        
     }
 
     public Visitor(String firstName, String lastName, String email, String address) {
@@ -139,6 +144,20 @@ public class Visitor implements Serializable {
      */
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    /**
+     * @return the reservation
+     */
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    /**
+     * @param reservation the reservation to set
+     */
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
     
 }

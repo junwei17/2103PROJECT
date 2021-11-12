@@ -82,7 +82,7 @@ public class DataInitializationSessionBean {
     
     private void initializeData() 
     {
-        /*try
+        try
         {
             employeeSessionBeanLocal.createNewEmployee(new Employee("sysadmin", "password", AccessRightEnum.ADMINISTRATOR));
             employeeSessionBeanLocal.createNewEmployee(new Employee("opmanager", "password", AccessRightEnum.OPERATION_MANAGER));
@@ -97,40 +97,45 @@ public class DataInitializationSessionBean {
            
             
             RoomType roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Deluxe Room");
-            roomSessionBeanLocal.createRoom(new Room(0101, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0201, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0301, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0401, true, roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Deluxe Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("100"), roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Deluxe Room Normal", RateTypeEnum.NORMAL, new BigDecimal("50"), roomType));
+            roomSessionBeanLocal.createRoom(new Room("0101", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0201", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0301", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0401", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0501", true), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Deluxe Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("100")), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Deluxe Room Normal", RateTypeEnum.NORMAL, new BigDecimal("50")), roomType.getRoomTypeId());
             roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Premier Room");
-            roomSessionBeanLocal.createRoom(new Room(0102, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0202, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0302, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0402, true, roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Premier Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("200"), roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Premier Room Normal", RateTypeEnum.NORMAL, new BigDecimal("100"), roomType));
+            roomSessionBeanLocal.createRoom(new Room("0102", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0202", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0302", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0402", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0502", true), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Premier Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("200")), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Premier Room Normal", RateTypeEnum.NORMAL, new BigDecimal("100")), roomType.getRoomTypeId());
             roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Family Room");            
-            roomSessionBeanLocal.createRoom(new Room(0103, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0203, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0303, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0403, true, roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Family Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("300"), roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Family Room Normal", RateTypeEnum.NORMAL, new BigDecimal("150"), roomType));
+            roomSessionBeanLocal.createRoom(new Room("0103", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0203", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0303", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0403", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0503", true), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Family Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("300")), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Family Room Normal", RateTypeEnum.NORMAL, new BigDecimal("150")), roomType.getRoomTypeId());
             roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Junior Suite");
-            roomSessionBeanLocal.createRoom(new Room(0104, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0204, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0304, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0404, true, roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Junior Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("400"), roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Junior Room Normal", RateTypeEnum.NORMAL, new BigDecimal("200"), roomType));
+            roomSessionBeanLocal.createRoom(new Room("0104", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0204", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0304", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0404", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0504", true), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Junior Suite Published", RateTypeEnum.PUBLISHED, new BigDecimal("400")), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Junior Suite Normal", RateTypeEnum.NORMAL, new BigDecimal("200")), roomType.getRoomTypeId());
             roomType = roomTypeSessionBeanLocal.retreieveRoomTypeByName("Grand Suite");
-            roomSessionBeanLocal.createRoom(new Room(0105, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0205, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0305, true, roomType));
-            roomSessionBeanLocal.createRoom(new Room(0405, true, roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Room Published", RateTypeEnum.PUBLISHED, new BigDecimal("500"), roomType));
-            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Room Normal", RateTypeEnum.NORMAL, new BigDecimal("250"), roomType));
+            roomSessionBeanLocal.createRoom(new Room("0105", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0205", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0305", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0405", true), roomType.getRoomTypeId());
+            roomSessionBeanLocal.createRoom(new Room("0505", true), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Suite Published", RateTypeEnum.PUBLISHED, new BigDecimal("500")), roomType.getRoomTypeId());
+            roomRateSessionBeanLocal.createRoomRate(new RoomRate("Grand Suite Normal", RateTypeEnum.NORMAL, new BigDecimal("250")), roomType.getRoomTypeId());
             
             
         } catch (EmployeeUsernameExistException | UnknownPersistenceException | RoomExistException | RoomRateExistException  | RoomTypeNotFoundException ex)
@@ -138,7 +143,7 @@ public class DataInitializationSessionBean {
             ex.printStackTrace();
         }
         
-     */   
+    
     }
 
     // Add business logic below. (Right-click in editor and choose

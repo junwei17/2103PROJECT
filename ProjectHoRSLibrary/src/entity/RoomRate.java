@@ -44,16 +44,22 @@ public class RoomRate implements Serializable {
     }
     
 
-    public RoomRate(String name, RateTypeEnum rateType, BigDecimal ratePerNight, Date validityStartDate, Date validityEndDate) {
+    public RoomRate(String name, RateTypeEnum rateType, BigDecimal ratePerNight) {
+        this();
         this.name = name;
         this.rateType = rateType;
         this.ratePerNight = ratePerNight;
-        this.validityStartDate = validityStartDate;
-        this.validityEndDate = validityEndDate;
     }
 
     public RoomRate() {
         this.disabled = false;
+    }
+
+    public RoomRate(Long roomRateId, RoomType roomType, RateTypeEnum rateType, BigDecimal ratePerNight) {
+        this.roomRateId = roomRateId;
+        this.rateType = rateType;
+        this.ratePerNight = ratePerNight;
+        this.roomType = roomType;
     }
     
 

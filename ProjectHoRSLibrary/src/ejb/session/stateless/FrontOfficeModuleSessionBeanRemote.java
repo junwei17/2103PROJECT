@@ -22,7 +22,11 @@ import util.exception.UnknownPersistenceException;
 public interface FrontOfficeModuleSessionBeanRemote {
     public List<Object[]> searchRooms(Date startDate, Date endDate);
     
-    public Long createReservation(Reservation newReservation) throws ReservationExistException, UnknownPersistenceException;
+    public Long createReservation(Reservation newReservation, Long visitorId) throws ReservationExistException, UnknownPersistenceException;
 
     public Long reserveRoom(ReservationRoom newReservationRoom, Long reservationId) throws ReservationRoomExistException, UnknownPersistenceException;
+    
+    public List<ReservationRoom> allocatedRooms(Long visitorId);
+    
+    public Long createReservation(Reservation newReservation) throws ReservationExistException, UnknownPersistenceException;
 }
