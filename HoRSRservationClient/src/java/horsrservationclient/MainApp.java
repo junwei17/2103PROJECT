@@ -7,6 +7,7 @@ package horsrservationclient;
 
 import ejb.session.stateless.FrontOfficeModuleSessionBeanRemote;
 import ejb.session.stateless.ReservationSessionBeanRemote;
+import ejb.session.stateless.RoomRateSessionBeanRemote;
 import ejb.session.stateless.RoomSessionBeanRemote;
 import ejb.session.stateless.VisitorSessionBeanRemote;
 import entity.Guest;
@@ -40,15 +41,18 @@ public class MainApp {
     private ReservationSessionBeanRemote reservationSessionBeanRemote;
     private Guest currentGuest;
     private FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote;
+    private RoomRateSessionBeanRemote roomRateSessionBeanRemote;
     
     public MainApp() {
     }
 
-    public MainApp(VisitorSessionBeanRemote visitorSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote, FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote) {
+    public MainApp(VisitorSessionBeanRemote visitorSessionBeanRemote, RoomSessionBeanRemote roomSessionBeanRemote, ReservationSessionBeanRemote reservationSessionBeanRemote,
+            FrontOfficeModuleSessionBeanRemote frontOfficeModuleSessionBeanRemote, RoomRateSessionBeanRemote roomRateSessionBeanRemote) {
         this.visitorSessionBeanRemote = visitorSessionBeanRemote;
         this.roomSessionBeanRemote = roomSessionBeanRemote;
         this.reservationSessionBeanRemote = reservationSessionBeanRemote;
         this.frontOfficeModuleSessionBeanRemote = frontOfficeModuleSessionBeanRemote;
+        this.roomRateSessionBeanRemote = roomRateSessionBeanRemote;
     }
 
     
@@ -213,7 +217,6 @@ public class MainApp {
     
     public List<Object[]> doSearchRoom() {
         Scanner sc = new Scanner(System.in);
-        Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         System.out.println("Start here");
         System.out.println("Enter Start Date (dd/MM/yyyy)> ");
@@ -241,7 +244,7 @@ public class MainApp {
         List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(/*format.format(cal.getTime())*/ dateStart, dateEnd);
         int count = 1;
         for(Object[] obj : list){
-            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], ((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight());
+            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], (roomRateSessionBeanRemote.getFee(((RoomType)obj[0]).getRoomTypeId(),dateStart, dateEnd)));
             count++;
         }
         System.out.println("end here");
@@ -283,11 +286,16 @@ public class MainApp {
             Reservation newReservation = new Reservation();
             newReservation.setStartDate(dateStart);
             newReservation.setEndDate(dateEnd);
-            newReservation.setFee(((RoomType)list.get(option-1)[0]).getRoomRates().get(0).getRatePerNight().multiply(BigDecimal.valueOf((dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24)));  
+            
+            RoomType roomType = (RoomType)list.get(option-1)[0];
+            BigDecimal fee = roomRateSessionBeanRemote.getFee(roomType.getRoomTypeId(), dateStart, dateEnd);
+            BigDecimal totalFee = fee.multiply(BigDecimal.valueOf(number));
+            
+            newReservation.setFee(totalFee);  
             try {
                 Long reservationId = frontOfficeModuleSessionBeanRemote.createReservation(newReservation);
                 visitorSessionBeanRemote.addReservation(currentGuest.getVisitorId(), reservationId);
-                System.out.println("Can Create room!");
+                System.out.println("Successful! Total Price: " + totalFee );
                 for (int i = 0; i < number; i++)
                 {
                     ReservationRoom reservationRoom = new ReservationRoom();
@@ -308,7 +316,8 @@ public class MainApp {
         List<Object[]> list = frontOfficeModuleSessionBeanRemote.searchRooms(/*format.format(cal.getTime())*/ dateStart, dateEnd);
         int count = 1;
         for(Object[] obj : list){
-            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], ((RoomType)obj[0]).getRoomRates().get(0).getRatePerNight());
+            BigDecimal fee = roomRateSessionBeanRemote.getFee(((RoomType)obj[0]).getRoomTypeId(),dateStart, dateEnd);
+            System.out.printf("%15s%30s%30s%30s\n", count,((RoomType)obj[0]).getName(), (Long)obj[1], (roomRateSessionBeanRemote.getFee(((RoomType)obj[0]).getRoomTypeId(),dateStart, dateEnd)));
             count++;
         }
         return list;

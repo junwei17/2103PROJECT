@@ -12,6 +12,8 @@ import ejb.session.stateless.RoomSessionBeanLocal;
 import entity.Partner;
 import entity.Reservation;
 import entity.ReservationRoom;
+import entity.Room;
+import entity.RoomRate;
 import entity.RoomType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,7 +68,26 @@ public class HolidayReservationWebService {
             Date dateStart = format.parse(startDate);
             Date dateEnd = format.parse(endDate);
         
-        return frontOfficeModuleSessionBeanLocal.searchRooms(dateStart, dateEnd);
+        List<Object[]> list = frontOfficeModuleSessionBeanLocal.searchRooms(dateStart, dateEnd);
+        
+        for (Object[] objectArr : list)
+        {
+            RoomType roomType = (RoomType) objectArr[0];
+            em.detach(roomType);
+            
+            for(Room room : roomType.getRooms())
+            {
+                em.detach(room);
+                room.setRoomType(null);
+            }
+            
+            for (RoomRate roomRate : roomType.getRoomRates())
+            {
+                em.detach(roomRate);
+                roomRate.setRoomType(null);
+            }
+        }
+        return list;
     }
     
     @WebMethod(operationName = "partnerLogin")

@@ -6,6 +6,8 @@
 package ejb.session.stateless;
 
 import entity.RoomRate;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.RoomRateExistException;
@@ -28,4 +30,6 @@ public interface RoomRateSessionBeanRemote {
     public List<RoomRate> viewAllRoomRates();
     
     public void deleteRoomRate(Long roomRateId) throws RoomRateNotFoundException;
+    public BigDecimal getRoomRate(Long roomTypeId, Date date);
+    public BigDecimal getFee(Long roomTypeId, Date start, Date end);
 }
