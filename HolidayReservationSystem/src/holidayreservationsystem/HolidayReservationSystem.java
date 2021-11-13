@@ -6,19 +6,17 @@
 package holidayreservationsystem;
 
 import java.util.Scanner;
-import ws.client.HolidayReservationWebService_Service;
 
 /**
  *
  * @author harmo
  */
 public class HolidayReservationSystem {
-    public static HolidayReservationWebService_Service service;
     
     
     public static void main(String[] args) 
     {
-        MainApp mainApp = new MainApp(service);
+        MainApp mainApp = new MainApp();
         mainApp.runApp();
     }
     

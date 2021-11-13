@@ -31,6 +31,12 @@
 <message name="ReservationNotFoundException">
 <part name="fault" element="tns:ReservationNotFoundException"/>
 </message>
+<message name="getFee">
+<part name="parameters" element="tns:getFee"/>
+</message>
+<message name="getFeeResponse">
+<part name="parameters" element="tns:getFeeResponse"/>
+</message>
 <message name="searchRooms">
 <part name="parameters" element="tns:searchRooms"/>
 </message>
@@ -68,6 +74,11 @@
 <fault message="tns:ReservationRoomExistException" name="ReservationRoomExistException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/ReservationRoomExistException"/>
 <fault message="tns:PartnerNotFoundException" name="PartnerNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/PartnerNotFoundException"/>
 <fault message="tns:ReservationNotFoundException" name="ReservationNotFoundException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/reserveRoom/Fault/ReservationNotFoundException"/>
+</operation>
+<operation name="getFee">
+<input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/getFeeRequest" message="tns:getFee"/>
+<output wsam:Action="http://ws.session.ejb/HolidayReservationWebService/getFeeResponse" message="tns:getFeeResponse"/>
+<fault message="tns:ParseException" name="ParseException" wsam:Action="http://ws.session.ejb/HolidayReservationWebService/getFee/Fault/ParseException"/>
 </operation>
 <operation name="searchRooms">
 <input wsam:Action="http://ws.session.ejb/HolidayReservationWebService/searchRoomsRequest" message="tns:searchRooms"/>
@@ -118,6 +129,18 @@
 </fault>
 <fault name="ReservationNotFoundException">
 <soap:fault name="ReservationNotFoundException" use="literal"/>
+</fault>
+</operation>
+<operation name="getFee">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+<fault name="ParseException">
+<soap:fault name="ParseException" use="literal"/>
 </fault>
 </operation>
 <operation name="searchRooms">

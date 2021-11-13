@@ -16,6 +16,10 @@
 
 <xs:element name="UnknownPersistenceException" type="tns:UnknownPersistenceException"/>
 
+<xs:element name="getFee" type="tns:getFee"/>
+
+<xs:element name="getFeeResponse" type="tns:getFeeResponse"/>
+
 <xs:element name="partnerLogin" type="tns:partnerLogin"/>
 
 <xs:element name="partnerLoginResponse" type="tns:partnerLoginResponse"/>
@@ -35,6 +39,27 @@
 <xs:element name="viewReservationDetails" type="tns:viewReservationDetails"/>
 
 <xs:element name="viewReservationDetailsResponse" type="tns:viewReservationDetailsResponse"/>
+
+<xs:complexType name="getFee">
+<xs:sequence>
+<xs:element name="roomTypeId" type="xs:long" minOccurs="0"/>
+<xs:element name="startDate" type="xs:string" minOccurs="0"/>
+<xs:element name="endDate" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getFeeResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:decimal" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ParseException">
+<xs:sequence>
+<xs:element name="errorOffset" type="xs:int"/>
+<xs:element name="message" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
 
 <xs:complexType name="reserveRoom">
 <xs:sequence>
@@ -140,13 +165,6 @@
 <xs:element name="roomType" type="tns:roomType" minOccurs="0"/>
 <xs:element name="validityEndDate" type="xs:dateTime" minOccurs="0"/>
 <xs:element name="validityStartDate" type="xs:dateTime" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="ParseException">
-<xs:sequence>
-<xs:element name="errorOffset" type="xs:int"/>
-<xs:element name="message" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

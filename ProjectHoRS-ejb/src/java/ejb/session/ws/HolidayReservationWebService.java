@@ -21,8 +21,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -108,14 +110,15 @@ public class HolidayReservationWebService {
         Partner partner = partnerSessionBeanLocal.partnerLogin(username, password);
         partner.getReservations().size();
 
-        em.detach(partner);
 
         for(Reservation r : partner.getReservations())
         {
             em.detach(r);
             r.setPartner(null);
+            r.setReservationRooms(null);
+            
         }
-        System.out.println("bye");
+
         return partner;
     }
     
@@ -191,5 +194,19 @@ public class HolidayReservationWebService {
         return newReservation;
     }
   
+    @WebMethod(operationName = "getFee")
+    public BigDecimal getFee(@WebParam(name = "roomTypeId") Long roomTypeId, @WebParam(name = "startDate") String startDate,@WebParam(name = "endDate") String endDate) throws ParseException 
+    {
+       
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+
+        Date dateStart = format.parse(startDate);
+        Date dateEnd = format.parse(endDate);
+
+        return roomRateSessionBeanLocal.getFee(roomTypeId, dateStart,dateEnd);
+        
+    }
+            
     
 }
