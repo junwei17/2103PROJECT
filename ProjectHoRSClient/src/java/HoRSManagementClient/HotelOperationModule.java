@@ -119,19 +119,19 @@ public class HotelOperationModule {
                 } else if (response == 6) {
                     doCreateNewRoom();
                 } else if (response == 7) {
-                    System.out.println("Enter Room ID> ");
-                    Long roomId = sc.nextLong();
+                    System.out.println("Enter Room Number> ");
+                    Long roomName = sc.nextLong();
                     try {
-                        Room currentRoom = roomSessionBeanRemote.viewRoomDetails(roomId);
+                        Room currentRoom = roomSessionBeanRemote.retreieveRoom(roomName);
                         doUpdateRoom(currentRoom);
                     } catch (RoomNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
                 } else if (response == 8) {
-                    System.out.println("Enter Room ID> ");
-                    Long roomId = sc.nextLong();
+                    System.out.println("Enter Room Number> ");
+                    Long roomName = sc.nextLong();
                     try {
-                        Room currentRoom = roomSessionBeanRemote.viewRoomDetails(roomId);
+                        Room currentRoom = roomSessionBeanRemote.retreieveRoom(roomName);
                         doDeleteRoom(currentRoom);
                     } catch (RoomNotFoundException ex) {
                         System.out.println(ex.getMessage());
