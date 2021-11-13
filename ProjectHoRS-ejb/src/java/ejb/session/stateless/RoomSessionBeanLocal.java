@@ -32,4 +32,6 @@ public interface RoomSessionBeanLocal {
 
     public Room viewRoomDetails(Long roomId) throws RoomNotFoundException;
 
+    public Room retreieveRoom(Long roomName) throws RoomNotFoundException;
+
 }

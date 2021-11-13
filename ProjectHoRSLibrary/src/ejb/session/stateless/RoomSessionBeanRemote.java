@@ -29,4 +29,5 @@ public interface RoomSessionBeanRemote {
     public void updateRoom(Room room) throws RoomNotFoundException, UpdateRoomException;
 
     public Room viewRoomDetails(Long roomId) throws RoomNotFoundException;
+    public Room retreieveRoom(Long roomName) throws RoomNotFoundException;
 }

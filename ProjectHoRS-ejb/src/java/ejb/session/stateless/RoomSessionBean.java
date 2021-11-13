@@ -122,4 +122,18 @@ public class RoomSessionBean implements RoomSessionBeanRemote, RoomSessionBeanLo
         return query.getResultList();
     }
     
+    @Override
+    public Room retreieveRoom(Long roomName) throws RoomNotFoundException
+    {
+        Query query = em.createQuery("SELECT r FROM RoomType r WHERE r.name = :inRoomName");
+        query.setParameter("inRoomeName", roomName);
+        
+        try {
+            return(Room)query.getSingleResult();
+        }catch (NoResultException | NonUniqueResultException ex) {
+            throw new RoomNotFoundException("The Room " + roomName + " does not exists!");
+        }
+        
+    }
+    
 }
